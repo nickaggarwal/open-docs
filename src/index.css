@@ -1,0 +1,81 @@
+/**
+ * Open Docs - Global CSS Styles
+ * This file contains global styles for the Open Docs application
+ */
+
+/* Theme Variables */
+:root {
+  --primary-color: #2E8555;
+  --primary-light-color: #4CAF50;
+  --primary-dark-color: #1B5E20;
+  --background-color: #f9fafb;
+  --paper-color: #ffffff;
+  --text-color: #1f2937;
+  --text-secondary-color: #6b7280;
+  --border-color: #e5e7eb;
+  --hover-color: rgba(0, 0, 0, 0.04);
+  --active-color: rgba(46, 133, 85, 0.08);
+}
+
+/* Dark Theme Variables */
+[data-theme='dark'] {
+  --primary-color: #4CAF50;
+  --primary-light-color: #81C784;
+  --primary-dark-color: #2E8555;
+  --background-color: #111827;
+  --paper-color: #1f2937;
+  --text-color: #f9fafb;
+  --text-secondary-color: #9ca3af;
+  --border-color: #374151;
+  --hover-color: rgba(255, 255, 255, 0.04);
+  --active-color: rgba(76, 175, 80, 0.08);
+}
+
+/* Layout Fixes - Overrides MUI specific classes */
+.css-1a6xp80 {
+  margin-left: 20px !important;
+}
+
+/* Base Styles */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--background-color);
+  color: var(--text-color);
+}
+
+/* Code Typography */
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+/* Scrolling Behavior */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Accessibility - Focus States */
+*:focus:not(:focus-visible) {
+  outline: none;
+}
+
+*:focus-visible {
+  outline: 2px solid #2e8555;
+  outline-offset: 2px;
+}
+
+/* Links */
+a {
+  color: var(--primary-color);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+} 

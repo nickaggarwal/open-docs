@@ -1,0 +1,336 @@
+# Styling Guide
+
+This guide explains how to style your documentation using Material UI and custom CSS in Open Docs.
+
+## Material UI Styling
+
+Open Docs uses Material UI for styling components. Material UI provides several approaches to styling:
+
+1. **Styled Components**: Using the `styled` utility from `@mui/material/styles`
+2. **sx prop**: Using the `sx` prop for one-off styling
+3. **Theme Customization**: Customizing the global theme
+
+### Styled Components
+
+You can create styled components using the `styled` utility:
+
+```tsx
+import { styled } from '@mui/material/styles';
+import Button from '@mui/material/Button';
+
+// Create a styled button
+const CustomButton = styled(Button)(({ theme }) => ({
+  padding: '12px 24px',
+  borderRadius: '8px',
+  textTransform: 'none',
+  fontWeight: 600,
+  boxShadow: 'none',
+  '&:hover': {
+    boxShadow: theme.shadows[2],
+  },
+}));
+
+// Use the styled button
+function MyComponent() {
+  return <CustomButton variant="contained">Click Me</CustomButton>;
+}
+```
+
+### sx Prop
+
+The `sx` prop is a shorthand for defining custom styles directly on Material UI components:
+
+```tsx
+import { Box, Button, Typography } from '@mui/material';
+
+function MyComponent() {
+  return (
+    <Box
+      sx={{
+        p: 3,
+        borderRadius: 2,
+        bgcolor: 'background.paper',
+        boxShadow: 1,
+      }}
+    >
+      <Typography
+        variant="h4"
+        sx={{
+          fontWeight: 600,
+          mb: 2,
+          color: 'primary.main',
+        }}
+      >
+        Hello World
+      </Typography>
+      <Button
+        variant="contained"
+        sx={{
+          px: 3,
+          py: 1.5,
+          borderRadius: 2,
+          textTransform: 'none',
+          fontWeight: 600,
+        }}
+      >
+        Click Me
+      </Button>
+    </Box>
+  );
+}
+```
+
+The `sx` prop supports:
+
+- Shorthand properties (`p` for padding, `m` for margin, etc.)
+- Theme values (`primary.main`, `secondary.light`, etc.)
+- Responsive values (`{ xs: 1, sm: 2, md: 3 }`)
+- Nested selectors (`'&:hover'`, `'& .className'`, etc.)
+
+### Theme Customization
+
+You can customize the global theme in `src/theme/ThemeContext.tsx`:
+
+```tsx
+const theme = createTheme({
+  palette: {
+    primary: {
+      main: '#2e8555', // Change to your brand color
+    },
+    secondary: {
+      main: '#e6007a', // Change to your secondary color
+    },
+  },
+  typography: {
+    fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+    h1: {
+      fontWeight: 700,
+      fontSize: '2.5rem',
+    },
+    // ...
+  },
+  components: {
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          textTransform: 'none',
+        },
+      },
+    },
+    // ...
+  },
+});
+```
+
+## Styling MDX Content
+
+Open Docs provides custom styling for MDX content through the `MDXContent` component. You can customize the styling of MDX elements in `src/components/MDXContent.tsx`:
+
+```tsx
+export const mdxComponents = {
+  h1: (props: any) => <Typography variant="h1" component="h1" gutterBottom {...props} />,
+  h2: (props: any) => <Typography variant="h2" component="h2" gutterBottom {...props} />,
+  // ...
+  p: (props: any) => <Typography variant="body1" paragraph {...props} />,
+  a: (props: any) => {
+    const { href, ...rest } = props;
+    const isExternal = href.startsWith('http');
+    
+    if (isExternal) {
+      return <Link href={href} target="_blank" rel="noopener noreferrer" {...rest} />;
+    }
+    
+    return <Link component={RouterLink} to={href} {...rest} />;
+  },
+  // ...
+};
+```
+
+## Examples
+
+Here are some examples of styled components you can use in your documentation:
+
+### Alert Boxes
+
+<Alert severity="info" title="Information">
+  This is an information alert.
+</Alert>
+
+<Alert severity="warning" title="Warning">
+  This is a warning alert.
+</Alert>
+
+<Alert severity="error" title="Error">
+  This is an error alert.
+</Alert>
+
+<Alert severity="success" title="Success">
+  This is a success alert.
+</Alert>
+
+### Code Blocks
+
+```tsx
+// Example TypeScript code
+import React from 'react';
+import { Button } from '@mui/material';
+
+interface Props {
+  text: string;
+  onClick: () => void;
+}
+
+const CustomButton: React.FC<Props> = ({ text, onClick }) => {
+  return (
+    <Button variant="contained" color="primary" onClick={onClick}>
+      {text}
+    </Button>
+  );
+};
+
+export default CustomButton;
+```
+
+### Tables
+
+| Component | Description | Usage |
+|-----------|-------------|-------|
+| Button | A clickable button | `<Button variant="contained">Click Me</Button>` |
+| Typography | Text component | `<Typography variant="h1">Title</Typography>` |
+| Box | Layout component | `<Box sx={{ p: 2 }}>Content</Box>` |
+| Paper | Surface component | `<Paper elevation={2}>Content</Paper>` |
+
+### Blockquotes
+
+> Material UI is a popular React UI framework that implements Google's Material Design. It provides a comprehensive set of UI tools to help you ship new features faster.
+
+## Custom Components
+
+You can create custom components to use in your MDX files. Here's an example of a custom card component:
+
+```tsx
+// src/components/Card.tsx
+import React from 'react';
+import { Box, Paper, Typography } from '@mui/material';
+
+interface CardProps {
+  title: string;
+  children: React.ReactNode;
+}
+
+const Card: React.FC<CardProps> = ({ title, children }) => {
+  return (
+    <Paper
+      elevation={0}
+      sx={{
+        p: 3,
+        mb: 3,
+        borderRadius: 2,
+        border: '1px solid',
+        borderColor: 'divider',
+      }}
+    >
+      <Typography variant="h5" component="h3" gutterBottom sx={{ fontWeight: 600 }}>
+        {title}
+      </Typography>
+      <Box>{children}</Box>
+    </Paper>
+  );
+};
+
+export default Card;
+```
+
+Then, add it to your MDX components:
+
+```tsx
+// src/components/MDXContent.tsx
+import Card from './Card';
+
+export const mdxComponents = {
+  // ...
+  Card,
+  // ...
+};
+```
+
+Now you can use it in your MDX files:
+
+```mdx
+<Card title="Getting Started">
+  This is a custom card component that you can use in your MDX files.
+</Card>
+```
+
+## Responsive Design
+
+Open Docs is designed to be responsive out of the box. Material UI provides responsive utilities that you can use in your components:
+
+```tsx
+<Box
+  sx={{
+    p: { xs: 2, sm: 3, md: 4 }, // Responsive padding
+    display: { xs: 'block', md: 'flex' }, // Responsive display
+    flexDirection: { xs: 'column', md: 'row' }, // Responsive flex direction
+    gap: { xs: 2, md: 3 }, // Responsive gap
+  }}
+>
+  <Box sx={{ width: { xs: '100%', md: '50%' } }}>
+    <Typography variant="h4">Left Content</Typography>
+  </Box>
+  <Box sx={{ width: { xs: '100%', md: '50%' } }}>
+    <Typography variant="h4">Right Content</Typography>
+  </Box>
+</Box>
+```
+
+## Dark Mode
+
+Open Docs supports dark mode out of the box. You can toggle between light and dark mode using the theme toggle button in the header.
+
+To ensure your custom components work well in both light and dark mode, use theme-aware colors:
+
+```tsx
+<Box
+  sx={{
+    bgcolor: 'background.paper', // Uses theme-aware background color
+    color: 'text.primary', // Uses theme-aware text color
+    borderColor: 'divider', // Uses theme-aware border color
+  }}
+>
+  Content
+</Box>
+```
+
+You can also conditionally apply styles based on the current theme mode:
+
+```tsx
+<Box
+  sx={{
+    bgcolor: (theme) => 
+      theme.palette.mode === 'light' 
+        ? 'rgba(0, 0, 0, 0.05)' 
+        : 'rgba(255, 255, 255, 0.05)',
+  }}
+>
+  Content
+</Box>
+```
+
+## Best Practices
+
+Here are some best practices for styling in Open Docs:
+
+1. **Use Material UI components**: Prefer Material UI components over custom HTML elements.
+2. **Use the `sx` prop**: For one-off styling, use the `sx` prop instead of creating styled components.
+3. **Use theme values**: Reference theme values (`primary.main`, `spacing(2)`, etc.) instead of hardcoding values.
+4. **Be responsive**: Use responsive values for properties like padding, margin, and width.
+5. **Support dark mode**: Ensure your components work well in both light and dark mode.
+6. **Keep it consistent**: Follow a consistent styling approach throughout your documentation.
+
+## Further Reading
+
+- [Material UI Documentation](https://mui.com/material-ui/getting-started/)
+- [Material UI System](https://mui.com/system/getting-started/)
+- [Material UI sx prop](https://mui.com/system/getting-started/the-sx-prop/)
+- [Material UI Styled Components](https://mui.com/system/styled/) 

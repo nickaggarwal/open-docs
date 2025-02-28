@@ -1,0 +1,164 @@
+{
+  "name": "Open Docs",
+  "logo": "/logo.svg",
+  "favicon": "/favicon.svg",
+  
+  "api": {
+    "baseUrl": "https://api.example.com/",
+    "auth": {
+      "method": "key",
+      "name": "Authorization"
+    }
+  },
+  
+  "colors": {
+    "primary": "#2E8555",
+    "light": "#4CAF50",
+    "dark": "#1B5E20"
+  },
+  
+  "topbarCtaButton": {
+    "name": "Get Started",
+    "url": "https://github.com/yourusername/open-docs"
+  },
+  
+  "primaryTab": {
+    "name": "Documentation"
+  },
+  
+  "tabs": [
+    {
+      "name": "Guides",
+      "url": "guides"
+    },
+    {
+      "name": "API",
+      "url": "api"
+    },
+    {
+      "name": "Changelog",
+      "url": "changelog"
+    },
+    {
+      "name": "References",
+      "url": "references"
+    }
+  ],
+  
+  "navigation": [
+    {
+      "group": "",
+      "pages": ["introduction/introduction"]
+    },
+    {
+      "group": "Getting Started",
+      "pages": [
+        "getting-started/installation",
+        "getting-started/configuration",
+        "getting-started/quickstart"
+      ]
+    },
+    {
+      "group": "Core Concepts",
+      "pages": [
+        "core-concepts/architecture",
+        "core-concepts/data-model",
+        {
+          "group": "Components",
+          "pages": [
+            "core-concepts/components/overview",
+            "core-concepts/components/lifecycle",
+            "core-concepts/components/styling"
+          ]
+        },
+        {
+          "group": "State Management",
+          "pages": [
+            "core-concepts/state/overview",
+            "core-concepts/state/actions"
+          ]
+        }
+      ]
+    },
+    {
+      "group": "Guides",
+      "pages": [
+        "guides/creating-pages",
+        "guides/styling",
+        "guides/deployment",
+        {
+          "group": "Authentication",
+          "pages": [
+            "guides/authentication/overview",
+            "guides/authentication/providers",
+            "guides/authentication/jwt"
+          ]
+        },
+        {
+          "group": "Database",
+          "pages": [
+            "guides/database/setup",
+            "guides/database/migrations",
+            "guides/database/queries"
+          ]
+        }
+      ]
+    },
+    {
+      "group": "Advanced",
+      "pages": [
+        "advanced/plugins",
+        "advanced/theming",
+        "advanced/seo",
+        "advanced/performance",
+        "advanced/security"
+      ]
+    },
+    {
+      "group": "API Reference",
+      "pages": [
+        "api-reference/overview",
+        "api-reference/authentication",
+        "api-reference/endpoints",
+        "api-reference/error-handling"
+      ]
+    },
+    {
+      "group": "Resources",
+      "pages": [
+        "resources/faq",
+        "resources/troubleshooting",
+        "resources/community",
+        "resources/contributing"
+      ]
+    },
+    {
+      "group": "Changelog",
+      "pages": [
+        "changelog/overview",
+        {
+          "group": "2024",
+          "pages": [
+            "changelog/2024/january",
+            "changelog/2024/february",
+            "changelog/2024/march"
+          ]
+        },
+        {
+          "group": "2023",
+          "pages": [
+            "changelog/2023/december",
+            "changelog/2023/november",
+            "changelog/2023/october"
+          ]
+        }
+      ]
+    }
+  ],
+  
+  "footerSocials": {
+    "twitter": "https://twitter.com/yourusername",
+    "github": "https://github.com/yourusername",
+    "linkedin": "https://linkedin.com/in/yourusername"
+  }
+} 

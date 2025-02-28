@@ -1,0 +1,281 @@
+---
+title: Installation
+description: Learn how to install and set up Open Docs for your project
+lastUpdated: February 28, 2025
+category: Documentation
+---
+
+# Installation
+
+This guide will help you install and set up Open Docs for your project.
+
+<Callout type="info">
+Looking for a quick start? Check out our [Quickstart Guide](/docs/getting-started/quickstart) instead.
+</Callout>
+
+## Prerequisites
+
+Before you begin, make sure you have the following installed:
+
+- **Node.js** (version 14 or higher)
+- **npm** or **yarn**
+- **Git** (optional, but recommended)
+
+## Installation Methods
+
+There are two ways to install Open Docs:
+
+### 1. Using the starter template (recommended)
+
+The easiest way to get started with Open Docs is to use our starter template:
+
+<TabGroup>
+<Tab title="npm">
+```bash
+# Clone the repository
+git clone https://github.com/yourusername/open-docs.git my-docs
+
+# Navigate to the project directory
+cd my-docs
+
+# Install dependencies
+npm install
+
+# Start the development server
+npm start
+```
+</Tab>
+<Tab title="yarn">
+```bash
+# Clone the repository
+git clone https://github.com/yourusername/open-docs.git my-docs
+
+# Navigate to the project directory
+cd my-docs
+
+# Install dependencies
+yarn
+
+# Start the development server
+yarn start
+```
+</Tab>
+</TabGroup>
+
+This will create a new Open Docs project in the `my-docs` directory with all the necessary dependencies and configuration files.
+
+<Callout type="warning">
+Make sure you have the necessary permissions to clone repositories and install packages.
+</Callout>
+
+### 2. Manual Installation
+
+If you prefer to set up Open Docs manually or integrate it into an existing project, follow these steps:
+
+1. Create a new React project or use an existing one:
+
+```bash
+npx create-react-app my-docs --template typescript
+cd my-docs
+```
+
+2. Install the required dependencies:
+
+```bash
+npm install @mui/material @emotion/react @emotion/styled @mui/icons-material @mdx-js/react @mdx-js/mdx react-router-dom
+```
+
+3. Configure webpack to support MDX (if you're using Create React App, you'll need to eject or use a tool like CRACO):
+
+```javascript
+// Add to your webpack config
+module.exports = {
+  module: {
+    rules: [
+      {
+        test: /\.mdx?$/,
+        use: [
+          'babel-loader',
+          '@mdx-js/loader'
+        ]
+      }
+    ]
+  }
+};
+```
+
+## Configuration
+
+After installation, you may want to configure Open Docs to match your project's needs:
+
+### Customizing the Theme
+
+Open the `src/theme/ThemeContext.tsx` file to customize the theme colors, typography, and other design elements:
+
+```tsx
+const lightTheme = createTheme({
+  palette: {
+    mode: 'light',
+    primary: {
+      main: '#2e8555', // Change to your brand color
+    },
+    secondary: {
+      main: '#e6007a', // Change to your secondary color
+    },
+    // Add more customizations here
+  },
+  typography: {
+    fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+    h1: {
+      fontWeight: 700,
+    },
+    // Add more typography customizations
+  },
+});
+```
+
+## Have Questions?
+
+Join our [Discord community](https://discord.gg/opendocs) for help.
+
+## Adding Content
+
+To add new documentation pages:
+
+1. Create a new MDX file in the `src/content/` directory:
+
+```mdx
+# My New Page
+
+This is a new documentation page.
+
+## Section 1
+
+Content for section 1.
+
+## Section 2
+
+Content for section 2.
+```
+
+2. Add the page to the navigation configuration in `src/navigation/config.ts`.
+
+## Running in Development Mode
+
+To start the development server:
+
+```bash
+npm start
+```
+
+This will start the development server at `http://localhost:3000`.
+
+## Building for Production
+
+To build the project for production:
+
+```bash
+npm run build
+```
+
+This will create a `build` directory with the optimized production build.
+
+## Deployment
+
+You can deploy the `build` directory to any static hosting service:
+
+### Netlify
+
+1. Push your project to a Git repository (GitHub, GitLab, or Bitbucket).
+2. Log in to Netlify and click "New site from Git".
+3. Select your repository and configure the build settings:
+   - Build command: `npm run build`
+   - Publish directory: `build`
+
+### Vercel
+
+1. Push your project to a Git repository.
+2. Log in to Vercel and click "Import Project".
+3. Select your repository and configure the build settings:
+   - Build command: `npm run build`
+   - Output directory: `build`
+
+### GitHub Pages
+
+1. Install the `gh-pages` package:
+
+```bash
+npm install --save-dev gh-pages
+```
+
+2. Add the following to your `package.json`:
+
+```json
+{
+  "scripts": {
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
+  },
+  "homepage": "https://yourusername.github.io/open-docs"
+}
+```
+
+3. Deploy to GitHub Pages:
+
+```bash
+npm run deploy
+```
+
+## Troubleshooting
+
+### Common Issues
+
+#### "Cannot find module" errors
+
+If you encounter "Cannot find module" errors, make sure you have installed all the required dependencies:
+
+```bash
+npm install
+```
+
+#### TypeScript errors
+
+If you encounter TypeScript errors, make sure your `tsconfig.json` is properly configured:
+
+```json
+{
+  "compilerOptions": {
+    "target": "es5",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noFallthroughCasesInSwitch": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "jsx": "react-jsx"
+  },
+  "include": ["src"]
+}
+```
+
+#### MDX content not loading
+
+If your MDX content is not loading, check your webpack configuration and make sure you have set up the MDX loader correctly.
+
+## Next Steps
+
+After installation, you might want to:
+
+- [Customize the theme](/docs/customization)
+- [Add your own components](/docs/components)
+- [Configure the navigation](/docs/navigation)
+- [Deploy your site](/docs/deployment)
+
+If you encounter any issues or have questions, please [open an issue](https://github.com/yourusername/open-docs/issues) on GitHub. 

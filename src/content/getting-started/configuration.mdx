@@ -1,0 +1,659 @@
+# Configuration
+
+This guide explains how to configure your Open Docs site to match your project's needs.
+
+## Configuration Files
+
+Open Docs uses several configuration files:
+
+- **`package.json`**: Project dependencies and scripts
+- **`tsconfig.json`**: TypeScript configuration
+- **`src/navigation/config.ts`**: Navigation structure
+- **`src/theme/ThemeContext.tsx`**: Theme configuration
+
+## Theme Configuration
+
+The theme configuration is defined in `src/theme/ThemeContext.tsx`. You can customize the colors, typography, spacing, and other design elements:
+
+```tsx
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+import React, { createContext, useState, useMemo, useContext } from 'react';
+
+// Define the theme context type
+type ThemeContextType = {
+  toggleColorMode: () => void;
+  mode: 'light' | 'dark';
+};
+
+// Create the theme context
+const ThemeContext = createContext<ThemeContextType>({
+  toggleColorMode: () => {},
+  mode: 'light',
+});
+
+// Theme provider component
+export const ThemeContextProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+  // State for the current theme mode
+  const [mode, setMode] = useState<'light' | 'dark'>('light');
+
+  // Toggle function to switch between light and dark modes
+  const toggleColorMode = () => {
+    setMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
+  };
+
+  // Create the theme based on the current mode
+  const theme = useMemo(
+    () =>
+      createTheme({
+        palette: {
+          mode,
+          primary: {
+            main: '#2e8555', // Change to your brand color
+          },
+          secondary: {
+            main: '#e6007a', // Change to your secondary color
+          },
+          background: {
+            default: mode === 'light' ? '#ffffff' : '#121212',
+            paper: mode === 'light' ? '#f5f5f5' : '#1e1e1e',
+          },
+        },
+        typography: {
+          fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+          h1: {
+            fontWeight: 700,
+            fontSize: '2.5rem',
+          },
+          h2: {
+            fontWeight: 600,
+            fontSize: '2rem',
+          },
+          h3: {
+            fontWeight: 600,
+            fontSize: '1.5rem',
+          },
+          h4: {
+            fontWeight: 600,
+            fontSize: '1.25rem',
+          },
+          h5: {
+            fontWeight: 600,
+            fontSize: '1.1rem',
+          },
+          h6: {
+            fontWeight: 600,
+            fontSize: '1rem',
+          },
+        },
+        shape: {
+          borderRadius: 8,
+        },
+        components: {
+          MuiButton: {
+            styleOverrides: {
+              root: {
+                textTransform: 'none',
+              },
+            },
+          },
+          MuiAppBar: {
+            styleOverrides: {
+              root: {
+                boxShadow: mode === 'light' 
+                  ? '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)'
+                  : '0 1px 3px 0 rgba(0, 0, 0, 0.2), 0 1px 2px 0 rgba(0, 0, 0, 0.12)',
+              },
+            },
+          },
+        },
+      }),
+    [mode]
+  );
+
+  // Context value
+  const contextValue = {
+    toggleColorMode,
+    mode,
+  };
+
+  return (
+    <ThemeContext.Provider value={contextValue}>
+      <ThemeProvider theme={theme}>{children}</ThemeProvider>
+    </ThemeContext.Provider>
+  );
+};
+
+// Hook to use the theme context
+export const useThemeContext = () => useContext(ThemeContext);
+```
+
+### Customizing Colors
+
+To customize the colors, modify the `palette` section in the theme configuration:
+
+```tsx
+palette: {
+  mode,
+  primary: {
+    main: '#2e8555', // Change to your brand color
+    light: '#4caf50', // Lighter shade
+    dark: '#1b5e20', // Darker shade
+  },
+  secondary: {
+    main: '#e6007a', // Change to your secondary color
+    light: '#ff4081', // Lighter shade
+    dark: '#c51162', // Darker shade
+  },
+  error: {
+    main: '#f44336',
+  },
+  warning: {
+    main: '#ff9800',
+  },
+  info: {
+    main: '#2196f3',
+  },
+  success: {
+    main: '#4caf50',
+  },
+  background: {
+    default: mode === 'light' ? '#ffffff' : '#121212',
+    paper: mode === 'light' ? '#f5f5f5' : '#1e1e1e',
+  },
+  text: {
+    primary: mode === 'light' ? 'rgba(0, 0, 0, 0.87)' : 'rgba(255, 255, 255, 0.87)',
+    secondary: mode === 'light' ? 'rgba(0, 0, 0, 0.6)' : 'rgba(255, 255, 255, 0.6)',
+  },
+},
+```
+
+### Customizing Typography
+
+To customize the typography, modify the `typography` section:
+
+```tsx
+typography: {
+  fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
+  h1: {
+    fontWeight: 700,
+    fontSize: '2.5rem',
+    marginBottom: '1rem',
+  },
+  h2: {
+    fontWeight: 600,
+    fontSize: '2rem',
+    marginTop: '2rem',
+    marginBottom: '1rem',
+  },
+  h3: {
+    fontWeight: 600,
+    fontSize: '1.5rem',
+    marginTop: '1.5rem',
+    marginBottom: '0.75rem',
+  },
+  h4: {
+    fontWeight: 600,
+    fontSize: '1.25rem',
+    marginTop: '1.25rem',
+    marginBottom: '0.5rem',
+  },
+  h5: {
+    fontWeight: 600,
+    fontSize: '1.1rem',
+    marginTop: '1rem',
+    marginBottom: '0.5rem',
+  },
+  h6: {
+    fontWeight: 600,
+    fontSize: '1rem',
+    marginTop: '1rem',
+    marginBottom: '0.5rem',
+  },
+  body1: {
+    fontSize: '1rem',
+    lineHeight: 1.6,
+    marginBottom: '1rem',
+  },
+  body2: {
+    fontSize: '0.875rem',
+    lineHeight: 1.6,
+  },
+},
+```
+
+### Customizing Component Styles
+
+You can customize the styles of specific Material UI components using the `components` section:
+
+```tsx
+components: {
+  MuiButton: {
+    styleOverrides: {
+      root: {
+        textTransform: 'none',
+        borderRadius: '4px',
+        padding: '8px 16px',
+      },
+      contained: {
+        boxShadow: 'none',
+        '&:hover': {
+          boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+        },
+      },
+    },
+  },
+  MuiAppBar: {
+    styleOverrides: {
+      root: {
+        boxShadow: mode === 'light' 
+          ? '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)'
+          : '0 1px 3px 0 rgba(0, 0, 0, 0.2), 0 1px 2px 0 rgba(0, 0, 0, 0.12)',
+      },
+    },
+  },
+  MuiDrawer: {
+    styleOverrides: {
+      paper: {
+        borderRight: mode === 'light'
+          ? '1px solid rgba(0, 0, 0, 0.12)'
+          : '1px solid rgba(255, 255, 255, 0.12)',
+      },
+    },
+  },
+  MuiCard: {
+    styleOverrides: {
+      root: {
+        boxShadow: mode === 'light'
+          ? '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)'
+          : '0 1px 3px 0 rgba(0, 0, 0, 0.2), 0 1px 2px 0 rgba(0, 0, 0, 0.12)',
+        borderRadius: '8px',
+      },
+    },
+  },
+},
+```
+
+## Navigation Configuration
+
+The navigation structure is defined in `src/navigation/config.ts`. You can customize the top navigation bar and sidebar:
+
+```tsx
+export const navigationConfig = {
+  // Top navigation bar items
+  topNav: [
+    { label: 'Home', path: '/' },
+    { label: 'Docs', path: '/docs/introduction' },
+    { label: 'GitHub', path: 'https://github.com/yourusername/open-docs', external: true },
+  ],
+  
+  // Sidebar navigation items
+  sidebar: [
+    {
+      label: 'Getting Started',
+      items: [
+        { label: 'Introduction', path: '/docs/introduction' },
+        { label: 'Installation', path: '/docs/installation' },
+        { label: 'Configuration', path: '/docs/configuration' },
+      ],
+    },
+    {
+      label: 'Guides',
+      items: [
+        { label: 'Writing Content', path: '/docs/writing-content' },
+        { label: 'Customization', path: '/docs/customization' },
+        { label: 'Components', path: '/docs/components' },
+      ],
+    },
+    {
+      label: 'Advanced',
+      items: [
+        { label: 'Deployment', path: '/docs/deployment' },
+        { label: 'SEO', path: '/docs/seo' },
+        { label: 'Performance', path: '/docs/performance' },
+      ],
+    },
+  ],
+};
+```
+
+### Adding New Sidebar Sections
+
+To add a new section to the sidebar, add a new object to the `sidebar` array:
+
+```tsx
+{
+  label: 'API Reference',
+  items: [
+    { label: 'Overview', path: '/docs/api/overview' },
+    { label: 'Authentication', path: '/docs/api/authentication' },
+    { label: 'Endpoints', path: '/docs/api/endpoints' },
+  ],
+},
+```
+
+### Adding External Links
+
+You can add external links to the navigation by setting the `external` property to `true`:
+
+```tsx
+{
+  label: 'External Resources',
+  items: [
+    { 
+      label: 'Material UI Documentation', 
+      path: 'https://mui.com/material-ui/getting-started/', 
+      external: true 
+    },
+    { 
+      label: 'React Documentation', 
+      path: 'https://reactjs.org/docs/getting-started.html', 
+      external: true 
+    },
+  ],
+},
+```
+
+## Custom Components
+
+You can create custom components to use in your MDX files. These components should be defined in the `src/components/MDXContent.tsx` file:
+
+```tsx
+import React from 'react';
+import { 
+  Typography, 
+  Link, 
+  Box, 
+  Paper, 
+  Alert, 
+  AlertTitle,
+  Divider,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+} from '@mui/material';
+import { Link as RouterLink } from 'react-router-dom';
+
+// Define custom components for MDX
+export const mdxComponents = {
+  // Headings
+  h1: (props: any) => <Typography variant="h1" component="h1" gutterBottom {...props} />,
+  h2: (props: any) => <Typography variant="h2" component="h2" gutterBottom {...props} />,
+  h3: (props: any) => <Typography variant="h3" component="h3" gutterBottom {...props} />,
+  h4: (props: any) => <Typography variant="h4" component="h4" gutterBottom {...props} />,
+  h5: (props: any) => <Typography variant="h5" component="h5" gutterBottom {...props} />,
+  h6: (props: any) => <Typography variant="h6" component="h6" gutterBottom {...props} />,
+  
+  // Paragraph
+  p: (props: any) => <Typography variant="body1" paragraph {...props} />,
+  
+  // Links
+  a: (props: any) => {
+    const { href, ...rest } = props;
+    const isExternal = href.startsWith('http');
+    
+    if (isExternal) {
+      return <Link href={href} target="_blank" rel="noopener noreferrer" {...rest} />;
+    }
+    
+    return <Link component={RouterLink} to={href} {...rest} />;
+  },
+  
+  // Lists
+  ul: (props: any) => <Box component="ul" sx={{ pl: 4, mb: 2 }} {...props} />,
+  ol: (props: any) => <Box component="ol" sx={{ pl: 4, mb: 2 }} {...props} />,
+  li: (props: any) => <Box component="li" sx={{ mb: 1 }} {...props} />,
+  
+  // Blockquote
+  blockquote: (props: any) => (
+    <Paper 
+      elevation={0} 
+      sx={{ 
+        p: 2, 
+        my: 2, 
+        borderLeft: '4px solid', 
+        borderColor: 'primary.main',
+        bgcolor: 'background.paper',
+      }}
+    >
+      <Typography variant="body1" component="blockquote" sx={{ fontStyle: 'italic' }} {...props} />
+    </Paper>
+  ),
+  
+  // Code blocks
+  pre: (props: any) => (
+    <Paper 
+      elevation={0} 
+      sx={{ 
+        p: 2, 
+        my: 2, 
+        borderRadius: 1,
+        bgcolor: (theme) => theme.palette.mode === 'light' ? '#f5f7f9' : '#1a2b42',
+        overflow: 'auto',
+      }}
+    >
+      <Box component="pre" sx={{ m: 0, fontFamily: 'monospace' }} {...props} />
+    </Paper>
+  ),
+  
+  // Inline code
+  code: (props: any) => {
+    // Check if this is a block code or inline code
+    const isInline = typeof props.children === 'string';
+    
+    if (isInline) {
+      return (
+        <Box 
+          component="code" 
+          sx={{ 
+            fontFamily: 'monospace',
+            px: 0.8,
+            py: 0.4,
+            borderRadius: 0.5,
+            bgcolor: (theme) => theme.palette.mode === 'light' ? 'rgba(0, 0, 0, 0.05)' : 'rgba(255, 255, 255, 0.05)',
+          }}
+          {...props} 
+        />
+      );
+    }
+    
+    return <Box component="code" sx={{ fontFamily: 'monospace' }} {...props} />;
+  },
+  
+  // Horizontal rule
+  hr: () => <Divider sx={{ my: 3 }} />,
+  
+  // Table
+  table: (props: any) => (
+    <TableContainer component={Paper} sx={{ my: 2 }}>
+      <Table {...props} />
+    </TableContainer>
+  ),
+  thead: (props: any) => <TableHead {...props} />,
+  tbody: (props: any) => <TableBody {...props} />,
+  tr: (props: any) => <TableRow {...props} />,
+  th: (props: any) => <TableCell component="th" sx={{ fontWeight: 'bold' }} {...props} />,
+  td: (props: any) => <TableCell {...props} />,
+  
+  // Custom components
+  Alert: (props: any) => {
+    const { severity = 'info', title, children, ...rest } = props;
+    
+    return (
+      <Alert severity={severity} sx={{ my: 2 }} {...rest}>
+        {title && <AlertTitle>{title}</AlertTitle>}
+        {children}
+      </Alert>
+    );
+  },
+};
+```
+
+### Using Custom Components in MDX
+
+Once you've defined your custom components, you can use them in your MDX files:
+
+```mdx
+# Using Custom Components
+
+<Alert severity="info" title="Information">
+  This is an information alert.
+</Alert>
+
+<Alert severity="warning" title="Warning">
+  This is a warning alert.
+</Alert>
+
+<Alert severity="error" title="Error">
+  This is an error alert.
+</Alert>
+
+<Alert severity="success" title="Success">
+  This is a success alert.
+</Alert>
+```
+
+## Environment Variables
+
+You can use environment variables to configure your Open Docs site. Create a `.env` file in the root directory:
+
+```
+REACT_APP_SITE_NAME=My Documentation
+REACT_APP_SITE_URL=https://mydocs.example.com
+REACT_APP_GITHUB_URL=https://github.com/myusername/my-docs
+REACT_APP_GA_TRACKING_ID=UA-XXXXXXXXX-X
+```
+
+Then, you can access these variables in your code:
+
+```tsx
+const siteName = process.env.REACT_APP_SITE_NAME;
+const siteUrl = process.env.REACT_APP_SITE_URL;
+const githubUrl = process.env.REACT_APP_GITHUB_URL;
+const gaTrackingId = process.env.REACT_APP_GA_TRACKING_ID;
+```
+
+## Advanced Configuration
+
+### Custom Fonts
+
+To use custom fonts, you can either:
+
+1. Import them from Google Fonts in your `public/index.html` file:
+
+```html
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+```
+
+2. Or install them as npm packages:
+
+```bash
+npm install @fontsource/inter
+```
+
+Then import them in your `src/index.tsx` file:
+
+```tsx
+import '@fontsource/inter/400.css';
+import '@fontsource/inter/500.css';
+import '@fontsource/inter/600.css';
+import '@fontsource/inter/700.css';
+```
+
+Finally, update your theme configuration:
+
+```tsx
+typography: {
+  fontFamily: '"Inter", "Roboto", "Helvetica", "Arial", sans-serif',
+  // ...
+},
+```
+
+### Custom Code Highlighting
+
+To customize code highlighting, you can use a library like Prism.js or Highlight.js. Here's an example using Prism.js:
+
+1. Install the required packages:
+
+```bash
+npm install prismjs @types/prismjs
+```
+
+2. Import Prism.js and its CSS in your `src/index.tsx` file:
+
+```tsx
+import 'prismjs/themes/prism-tomorrow.css';
+import Prism from 'prismjs';
+import 'prismjs/components/prism-javascript';
+import 'prismjs/components/prism-typescript';
+import 'prismjs/components/prism-jsx';
+import 'prismjs/components/prism-tsx';
+import 'prismjs/components/prism-bash';
+import 'prismjs/components/prism-json';
+```
+
+3. Create a custom code block component in your `src/components/MDXContent.tsx` file:
+
+```tsx
+import React, { useEffect } from 'react';
+import Prism from 'prismjs';
+
+const CodeBlock = ({ children, className }: { children: string; className?: string }) => {
+  useEffect(() => {
+    Prism.highlightAll();
+  }, [children]);
+
+  const language = className ? className.replace('language-', '') : 'text';
+
+  return (
+    <pre className={`language-${language}`}>
+      <code className={`language-${language}`}>{children}</code>
+    </pre>
+  );
+};
+
+export const mdxComponents = {
+  // ...
+  code: (props: any) => {
+    const { children, className } = props;
+    
+    // Check if this is a block code or inline code
+    const isInline = typeof children === 'string' && !className;
+    
+    if (isInline) {
+      return (
+        <Box 
+          component="code" 
+          sx={{ 
+            fontFamily: 'monospace',
+            px: 0.8,
+            py: 0.4,
+            borderRadius: 0.5,
+            bgcolor: (theme) => theme.palette.mode === 'light' ? 'rgba(0, 0, 0, 0.05)' : 'rgba(255, 255, 255, 0.05)',
+          }}
+        >
+          {children}
+        </Box>
+      );
+    }
+    
+    return <CodeBlock className={className}>{children}</CodeBlock>;
+  },
+  // ...
+};
+```
+
+## Next Steps
+
+After configuring your Open Docs site, you might want to:
+
+- [Add custom components](/docs/components)
+- [Write documentation content](/docs/writing-content)
+- [Deploy your site](/docs/deployment)
+- [Optimize for SEO](/docs/seo)
+
+If you have any questions or need help with configuration, please [open an issue](https://github.com/yourusername/open-docs/issues) on GitHub. 

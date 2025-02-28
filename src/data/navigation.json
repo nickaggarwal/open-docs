@@ -1,0 +1,309 @@
+{
+  "topBar": {
+    "logo": {
+      "alt": "Open Docs Logo",
+      "src": "/logo.svg"
+    },
+    "title": "Open Docs",
+    "items": [
+      {
+        "label": "Docs",
+        "to": "/docs",
+        "position": "left"
+      },
+      {
+        "label": "API",
+        "to": "/api",
+        "position": "left"
+      },
+      {
+        "label": "Blog",
+        "to": "/blog",
+        "position": "left"
+      },
+      {
+        "label": "GitHub",
+        "href": "https://github.com/yourusername/open-docs",
+        "position": "right"
+      }
+    ]
+  },
+  "sidebar": {
+    "docs": [
+      {
+        "type": "category",
+        "label": "Getting Started",
+        "items": [
+          {
+            "type": "doc",
+            "id": "introduction",
+            "label": "Introduction"
+          },
+          {
+            "type": "doc",
+            "id": "installation",
+            "label": "Installation"
+          },
+          {
+            "type": "doc",
+            "id": "configuration",
+            "label": "Configuration"
+          },
+          {
+            "type": "doc",
+            "id": "quickstart",
+            "label": "Quickstart Guide"
+          }
+        ]
+      },
+      {
+        "type": "category",
+        "label": "Core Concepts",
+        "items": [
+          {
+            "type": "doc",
+            "id": "architecture",
+            "label": "Architecture"
+          },
+          {
+            "type": "doc",
+            "id": "data-model",
+            "label": "Data Model"
+          },
+          {
+            "type": "category",
+            "label": "Components",
+            "items": [
+              {
+                "type": "doc",
+                "id": "components-overview",
+                "label": "Overview"
+              },
+              {
+                "type": "doc",
+                "id": "component-lifecycle",
+                "label": "Lifecycle"
+              },
+              {
+                "type": "doc",
+                "id": "component-styling",
+                "label": "Styling"
+              }
+            ]
+          },
+          {
+            "type": "category",
+            "label": "State Management",
+            "items": [
+              {
+                "type": "doc",
+                "id": "state-overview",
+                "label": "Overview"
+              },
+              {
+                "type": "doc",
+                "id": "state-actions",
+                "label": "Actions"
+              },
+              {
+                "type": "doc",
+                "id": "state-reducers",
+                "label": "Reducers"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "category",
+        "label": "Guides",
+        "items": [
+          {
+            "type": "doc",
+            "id": "creating-pages",
+            "label": "Creating Pages"
+          },
+          {
+            "type": "doc",
+            "id": "styling",
+            "label": "Styling"
+          },
+          {
+            "type": "doc",
+            "id": "deployment",
+            "label": "Deployment"
+          },
+          {
+            "type": "category",
+            "label": "Authentication",
+            "items": [
+              {
+                "type": "doc",
+                "id": "auth-overview",
+                "label": "Overview"
+              },
+              {
+                "type": "doc",
+                "id": "auth-providers",
+                "label": "Providers"
+              },
+              {
+                "type": "doc",
+                "id": "auth-jwt",
+                "label": "JWT"
+              }
+            ]
+          },
+          {
+            "type": "category",
+            "label": "Database",
+            "items": [
+              {
+                "type": "doc",
+                "id": "db-setup",
+                "label": "Setup"
+              },
+              {
+                "type": "doc",
+                "id": "db-migrations",
+                "label": "Migrations"
+              },
+              {
+                "type": "doc",
+                "id": "db-queries",
+                "label": "Queries"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "category",
+        "label": "Advanced",
+        "items": [
+          {
+            "type": "doc",
+            "id": "plugins",
+            "label": "Plugins"
+          },
+          {
+            "type": "doc",
+            "id": "theming",
+            "label": "Theming"
+          },
+          {
+            "type": "doc",
+            "id": "seo",
+            "label": "SEO"
+          },
+          {
+            "type": "doc",
+            "id": "performance",
+            "label": "Performance"
+          },
+          {
+            "type": "doc",
+            "id": "security",
+            "label": "Security"
+          }
+        ]
+      },
+      {
+        "type": "category",
+        "label": "API Reference",
+        "items": [
+          {
+            "type": "doc",
+            "id": "api-overview",
+            "label": "Overview"
+          },
+          {
+            "type": "doc",
+            "id": "api-authentication",
+            "label": "Authentication"
+          },
+          {
+            "type": "doc",
+            "id": "api-endpoints",
+            "label": "Endpoints"
+          },
+          {
+            "type": "doc",
+            "id": "api-errors",
+            "label": "Error Handling"
+          }
+        ]
+      },
+      {
+        "type": "category",
+        "label": "Resources",
+        "items": [
+          {
+            "type": "doc",
+            "id": "faq",
+            "label": "FAQ"
+          },
+          {
+            "type": "doc",
+            "id": "troubleshooting",
+            "label": "Troubleshooting"
+          },
+          {
+            "type": "doc",
+            "id": "community",
+            "label": "Community"
+          },
+          {
+            "type": "doc",
+            "id": "contributing",
+            "label": "Contributing"
+          }
+        ]
+      }
+    ],
+    "api": [
+      {
+        "type": "category",
+        "label": "Core API",
+        "items": [
+          {
+            "type": "doc",
+            "id": "api-overview",
+            "label": "Overview"
+          },
+          {
+            "type": "doc",
+            "id": "api-reference",
+            "label": "Reference"
+          },
+          {
+            "type": "doc",
+            "id": "api-authentication",
+            "label": "Authentication"
+          }
+        ]
+      },
+      {
+        "type": "category",
+        "label": "Endpoints",
+        "items": [
+          {
+            "type": "doc",
+            "id": "endpoints-users",
+            "label": "Users"
+          },
+          {
+            "type": "doc",
+            "id": "endpoints-products",
+            "label": "Products"
+          },
+          {
+            "type": "doc",
+            "id": "endpoints-orders",
+            "label": "Orders"
+          }
+        ]
+      }
+    ]
+  }
+} 
