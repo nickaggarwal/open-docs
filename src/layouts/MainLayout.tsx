@@ -1,27 +1,8 @@
 import React, { useState, useEffect, ReactNode } from 'react';
 import { useLocation, Link as RouterLink } from 'react-router-dom';
-import {
-  Box,
-  Drawer,
-  AppBar,
-  Toolbar,
-  Typography,
-  IconButton,
-  useMediaQuery,
-  useTheme,
-  Container,
-  Button,
-  Paper,
-  alpha,
-} from '@mui/material';
-import MenuIcon from '@mui/icons-material/Menu';
-import CloseIcon from '@mui/icons-material/Close';
-import SearchIcon from '@mui/icons-material/Search';
-import GitHubIcon from '@mui/icons-material/GitHub';
-import Brightness4Icon from '@mui/icons-material/Brightness4';
-import Brightness7Icon from '@mui/icons-material/Brightness7';
-import { navigationConfig, siteConfig } from '../config';
+import { Container, Navbar, Nav, Button, Offcanvas, Form } from 'react-bootstrap';
 import NavigationSidebar from '../components/Sidebar';
+import { navigationConfig, siteConfig } from '../config';
 
 // Define the drawer width
 const DRAWER_WIDTH = 280;
@@ -33,14 +14,11 @@ export interface MainLayoutProps {
 }
 
 const MainLayout: React.FC<MainLayoutProps> = ({ children, toggleTheme, mode = 'light' }) => {
-  // Get the theme and media query
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-  
   // State for drawer open/closed
-  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   
-  // State for search query
+  // TODO: Implement search functionality in future
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [searchQuery, setSearchQuery] = useState('');
 
   const location = useLocation();
@@ -63,6 +41,8 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, toggleTheme, mode = '
   // Get navigation items based on current path
   const getNavigationItems = () => {
     console.log('Getting navigation items for path:', currentPath);
+    console.log('Navigation config:', navigationConfig);
+    
     let navigationItems;
     
     // Determine which navigation items to show based on the current path
@@ -75,11 +55,12 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, toggleTheme, mode = '
       navigationItems = navigationConfig.sidebar.docs;
     }
     
-    console.log('Navigation items:', navigationItems);
+    console.log('Navigation items:', JSON.stringify(navigationItems, null, 2));
     return navigationItems;
   };
 
-  // Handle search form submission
+  // TODO: Implement search functionality in future
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     console.log('Search query:', searchQuery);
@@ -87,192 +68,173 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, toggleTheme, mode = '
   };
 
   return (
-    <Box sx={{ display: 'flex', minHeight: '100vh' }}>
-      {/* App Bar */}
-      <AppBar
-        position="fixed"
-        sx={{
-          zIndex: (theme) => theme.zIndex.drawer + 1,
-          backgroundColor: 'var(--paper-color)',
-          color: 'var(--text-color)',
-          boxShadow: '0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06)',
-          borderBottom: '1px solid rgba(0, 0, 0, 0.08)',
-        }}
+    <div className="d-flex" style={{ minHeight: '100vh' }}>
+      {/* Top Navigation Bar */}
+      <Navbar 
+        fixed="top" 
+        bg={mode === 'dark' ? 'dark' : 'light'} 
+        variant={mode === 'dark' ? 'dark' : 'light'} 
+        className="border-bottom"
+        style={{ backgroundColor: 'var(--paper-color)', color: 'var(--text-color)' }}
       >
-        <Toolbar>
-          {isMobile && (
-            <IconButton
-              color="inherit"
-              aria-label="open drawer"
-              edge="start"
-              onClick={() => setDrawerOpen(!drawerOpen)}
-              sx={{ mr: 2 }}
-            >
-              {drawerOpen ? <CloseIcon /> : <MenuIcon />}
-            </IconButton>
-          )}
-
-          {/* Logo and Title */}
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+        <Container fluid>
+          <Navbar.Toggle 
+            aria-controls="sidebar-nav" 
+            onClick={() => setSidebarOpen(!sidebarOpen)}
+            className="d-md-none"
+          />
+          
+          <Navbar.Brand as={RouterLink} to="/" className="d-flex align-items-center">
             {siteConfig.logo && (
               <img
                 src={siteConfig.logo}
                 alt={`${siteConfig.name} logo`}
-                style={{ height: '32px', marginRight: '12px' }}
+                height="32"
+                className="me-2"
               />
             )}
-            <Typography variant="h6" noWrap component="div" sx={{ fontWeight: 600 }}>
-              {siteConfig.name}
-            </Typography>
-          </Box>
-
-          {/* Navigation Items */}
-          <Box sx={{ display: { xs: 'none', md: 'flex' }, ml: 4 }}>
+            <span className="fw-semibold">{siteConfig.name}</span>
+          </Navbar.Brand>
+          
+          {/* Main Navigation */}
+          <Nav className="me-auto d-none d-md-flex">
             {navigationConfig.topBar.items
               .filter(item => item.position === 'left')
-              .map((item, index) => (
-                <Button
-                  key={index}
-                  color="inherit"
-                  component={item.to ? RouterLink : 'a'}
-                  to={item.to}
-                  href={item.href}
-                  sx={{
-                    mx: 1,
-                    fontWeight: 500,
-                    color: (item.to && currentPath.startsWith(item.to)) || (item.href && currentPath.startsWith(item.href))
-                      ? 'var(--primary-color)'
-                      : 'var(--text-secondary-color)',
-                    '&:hover': {
-                      backgroundColor: 'transparent',
-                      color: 'var(--primary-color)',
-                    },
-                  }}
-                >
-                  {item.label}
-                </Button>
-              ))}
-          </Box>
-
-          {/* Right-side Items */}
-          <Box sx={{ flexGrow: 1 }} />
-          <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            {/* Search Button */}
-            <IconButton color="inherit" aria-label="search" onClick={() => console.log('Search clicked')}>
-              <SearchIcon />
-            </IconButton>
-
+              .map((item, index) => {
+                // If there's a "to" property (internal link), use RouterLink
+                if (item.to) {
+                  return (
+                    <Nav.Link 
+                      key={index}
+                      as={RouterLink}
+                      to={item.to}
+                      className={`mx-1 ${currentPath.startsWith(item.to) ? 'text-primary' : 'text-secondary'}`}
+                    >
+                      {item.label}
+                    </Nav.Link>
+                  );
+                }
+                // Otherwise, use a regular href link
+                return (
+                  <Nav.Link 
+                    key={index}
+                    href={item.href}
+                    className={`mx-1 ${item.href && currentPath.startsWith(item.href) ? 'text-primary' : 'text-secondary'}`}
+                  >
+                    {item.label}
+                  </Nav.Link>
+                );
+              })}
+          </Nav>
+          
+          {/* Right Side Items */}
+          <div className="d-flex align-items-center">
+            {/* Search */}
+            <Button 
+              variant="outline-secondary" 
+              className="me-2"
+              onClick={() => console.log('Search clicked')}
+            >
+              <i className="bi bi-search"></i>
+            </Button>
+            
             {/* Theme Toggle */}
             {toggleTheme && (
-              <IconButton color="inherit" onClick={toggleTheme} sx={{ ml: 1 }}>
-                {mode === 'dark' ? <Brightness7Icon /> : <Brightness4Icon />}
-              </IconButton>
+              <Button 
+                variant="outline-secondary" 
+                className="me-2"
+                onClick={toggleTheme}
+              >
+                {mode === 'dark' ? <i className="bi bi-sun"></i> : <i className="bi bi-moon"></i>}
+              </Button>
             )}
-
+            
             {/* GitHub Link */}
-            <IconButton
-              color="inherit"
-              aria-label="github"
-              href={siteConfig.footerSocials?.github || 'https://github.com'}
-              target="_blank"
+            <a 
+              href={siteConfig.footerSocials?.github || 'https://github.com'} 
+              target="_blank" 
               rel="noopener noreferrer"
-              sx={{ ml: 1 }}
+              className="btn btn-outline-secondary me-2"
             >
-              <GitHubIcon />
-            </IconButton>
-
+              <i className="bi bi-github"></i>
+            </a>
+            
             {/* CTA Button */}
             {siteConfig.topbarCtaButton && (
-              <Button
-                variant="contained"
-                color="primary"
+              <Button 
+                variant="primary"
                 href={siteConfig.topbarCtaButton.url}
-                sx={{
-                  ml: 2,
-                  fontWeight: 600,
+                className="fw-semibold"
+                style={{
                   backgroundColor: 'var(--primary-color)',
-                  '&:hover': {
-                    backgroundColor: 'var(--primary-dark-color)',
-                  },
                 }}
               >
                 {siteConfig.topbarCtaButton.name}
               </Button>
             )}
-          </Box>
-        </Toolbar>
-      </AppBar>
+          </div>
+        </Container>
+      </Navbar>
 
-      {/* Navigation Drawer */}
-      <Drawer
-        variant={isMobile ? 'temporary' : 'permanent'}
-        open={isMobile ? drawerOpen : true}
-        onClose={() => setDrawerOpen(false)}
-        sx={{
+      {/* Sidebar */}
+      <div 
+        className="d-none d-md-block" 
+        style={{ 
           width: DRAWER_WIDTH,
-          flexShrink: 0,
-          [`& .MuiDrawer-paper`]: {
-            width: DRAWER_WIDTH,
-            boxSizing: 'border-box',
-            backgroundColor: 'var(--paper-color)',
-            color: 'var(--text-color)',
-            borderRight: '1px solid var(--border-color)',
-            boxShadow: 'none',
-            height: '100vh',
-            position: 'fixed',
-            overflowY: 'auto',
-          },
+          backgroundColor: 'var(--paper-color)',
+          borderRight: '1px solid var(--border-color)',
+          position: 'fixed',
+          top: '56px',
+          bottom: 0,
+          overflowY: 'auto',
+          padding: '1rem 0.5rem 1rem 1.5rem'
         }}
       >
-        <Toolbar />
-        <Box sx={{ 
-          overflow: 'auto', 
-          p: 0,
-          pl: 1.5,
-          pr: 0.5,
-          height: 'calc(100vh - 64px)',
-          '&::-webkit-scrollbar': {
-            width: '4px',
-          },
-          '&::-webkit-scrollbar-thumb': {
-            backgroundColor: 'rgba(0, 0, 0, 0.1)',
-            borderRadius: '2px',
-          },
-          '&::-webkit-scrollbar-track': {
-            backgroundColor: 'transparent',
-          },
-        }}>
+        <NavigationSidebar items={getNavigationItems()} currentPath={currentPath} />
+      </div>
+
+      {/* Mobile Sidebar */}
+      <Offcanvas 
+        show={sidebarOpen} 
+        onHide={() => setSidebarOpen(false)} 
+        placement="start"
+        className="d-md-none"
+        style={{ 
+          width: DRAWER_WIDTH,
+          backgroundColor: 'var(--paper-color)',
+          color: 'var(--text-color)'
+        }}
+      >
+        <Offcanvas.Header closeButton>
+          <Offcanvas.Title>Navigation</Offcanvas.Title>
+        </Offcanvas.Header>
+        <Offcanvas.Body>
           <NavigationSidebar items={getNavigationItems()} currentPath={currentPath} />
-        </Box>
-      </Drawer>
+        </Offcanvas.Body>
+      </Offcanvas>
 
       {/* Main Content */}
-      <Box
-        component="main"
-        sx={{
-          flexGrow: 1,
-          p: { xs: 2, md: 3 },
-          pl: { md: 0 },
-          width: { md: `calc(100% - ${DRAWER_WIDTH}px)` },
-          ml: { md: `${DRAWER_WIDTH}px` },
+      <main 
+        className="flex-grow-1 px-3 pt-5 mt-3" 
+        style={{ 
+          marginLeft: window.innerWidth >= 768 ? DRAWER_WIDTH : 0,
           backgroundColor: 'var(--background-color)',
           minHeight: '100vh',
+          paddingTop: '56px'
         }}
       >
-        <Toolbar />
         <Container 
-          maxWidth="lg" 
-          sx={{ 
-            mt: 2,
-            pl: { xs: 2, md: 2 },
-            pr: { xs: 2, md: 4 },
-            maxWidth: '100%' 
+          className="py-4"
+          style={{ 
+            maxWidth: '100%',
+            paddingLeft: window.innerWidth >= 768 ? '2rem' : '1rem',
+            paddingRight: window.innerWidth >= 768 ? '4rem' : '1rem'
           }}
         >
           {children}
         </Container>
-      </Box>
-    </Box>
+      </main>
+    </div>
   );
 };
 

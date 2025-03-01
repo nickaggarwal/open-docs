@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { ThemeProvider, CssBaseline } from '@mui/material';
-import { createTheme } from '@mui/material/styles';
 import MainLayout from './layouts/MainLayout';
 import HomePage from './pages/HomePage';
 import DocPage from './pages/DocPage';
@@ -24,6 +22,7 @@ function App() {
   // Apply theme to document
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', themeMode);
+    document.body.className = themeMode === 'dark' ? 'bg-dark text-light' : 'bg-light text-dark';
   }, [themeMode]);
 
   // Apply colors from config
@@ -32,18 +31,6 @@ function App() {
     document.documentElement.style.setProperty('--primary-light-color', siteConfig.colors.light);
     document.documentElement.style.setProperty('--primary-dark-color', siteConfig.colors.dark);
   }, []);
-
-  // Create theme based on mode
-  const theme = createTheme({
-    palette: {
-      mode: themeMode,
-      primary: {
-        main: siteConfig.colors.primary,
-        light: siteConfig.colors.light,
-        dark: siteConfig.colors.dark,
-      },
-    },
-  });
 
   // Find first doc and API page for default navigation
   const defaultDocPage = navigationConfig.sidebar.docs[0]?.items?.[0]?.id || 'introduction';
@@ -54,61 +41,58 @@ function App() {
   console.log('Navigation config:', navigationConfig);
 
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <Router>
-        <MainLayout toggleTheme={toggleThemeMode} mode={themeMode}>
-          <Routes>
-            {/* Home page */}
-            <Route path="/" element={<HomePage />} />
-            
-            {/* Documentation routes */}
-            <Route 
-              path="/docs" 
-              element={<Navigate to={`/docs/${defaultDocPage}`} replace />} 
-            />
-            <Route 
-              path="/docs/:id" 
-              element={<DocPage />} 
-            />
-            <Route 
-              path="/docs/:segment1/:segment2" 
-              element={<DocPage />} 
-            />
-            <Route 
-              path="/docs/:segment1/:segment2/:segment3" 
-              element={<DocPage />} 
-            />
-            
-            {/* API routes */}
-            <Route 
-              path="/api" 
-              element={<Navigate to={`/api/${defaultApiPage}`} replace />} 
-            />
-            <Route 
-              path="/api/:id" 
-              element={<DocPage />} 
-            />
-            <Route 
-              path="/api/:segment1/:segment2" 
-              element={<DocPage />} 
-            />
-            <Route 
-              path="/api/:segment1/:segment2/:segment3" 
-              element={<DocPage />} 
-            />
-            
-            {/* Additional tab routes */}
-            <Route path="/guides" element={<Navigate to="/docs/guides/creating-pages" replace />} />
-            <Route path="/changelog" element={<Navigate to="/docs/changelog/overview" replace />} />
-            <Route path="/references" element={<Navigate to="/docs/resources/faq" replace />} />
-            
-            {/* Fallback route */}
-            <Route path="*" element={<Navigate to="/" replace />} />
-          </Routes>
-        </MainLayout>
-      </Router>
-    </ThemeProvider>
+    <Router>
+      <MainLayout toggleTheme={toggleThemeMode} mode={themeMode}>
+        <Routes>
+          {/* Home page */}
+          <Route path="/" element={<HomePage />} />
+          
+          {/* Documentation routes */}
+          <Route 
+            path="/docs" 
+            element={<Navigate to={`/docs/${defaultDocPage}`} replace />} 
+          />
+          <Route 
+            path="/docs/:id" 
+            element={<DocPage />} 
+          />
+          <Route 
+            path="/docs/:segment1/:segment2" 
+            element={<DocPage />} 
+          />
+          <Route 
+            path="/docs/:segment1/:segment2/:segment3" 
+            element={<DocPage />} 
+          />
+          
+          {/* API routes */}
+          <Route 
+            path="/api" 
+            element={<Navigate to={`/api/${defaultApiPage}`} replace />} 
+          />
+          <Route 
+            path="/api/:id" 
+            element={<DocPage />} 
+          />
+          <Route 
+            path="/api/:segment1/:segment2" 
+            element={<DocPage />} 
+          />
+          <Route 
+            path="/api/:segment1/:segment2/:segment3" 
+            element={<DocPage />} 
+          />
+          
+          {/* Additional tab routes */}
+          <Route path="/guides" element={<Navigate to="/docs/guides/creating-pages" replace />} />
+          <Route path="/changelog" element={<Navigate to="/docs/changelog/overview" replace />} />
+          <Route path="/references" element={<Navigate to="/docs/resources/faq" replace />} />
+          
+          {/* Fallback route */}
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </MainLayout>
+    </Router>
   );
 }
 

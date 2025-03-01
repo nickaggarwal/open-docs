@@ -86,6 +86,7 @@
         "guides/creating-pages",
         "guides/styling",
         "guides/deployment",
+        "guides/image-embeds",
         {
           "group": "Authentication",
           "pages": [

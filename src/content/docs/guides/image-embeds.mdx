@@ -1,0 +1,104 @@
+---
+title: 'Using Code Blocks'
+description: 'Learn how to embed and customize code blocks in your Open Docs documentation'
+---
+
+# Using Code Blocks
+
+Code blocks are essential for technical documentation. Open Docs provides a rich code block experience with syntax highlighting, line numbers, and more.
+
+## Basic Code Block
+
+To create a basic code block, use triple backticks followed by the language identifier:
+
+````md
+```javascript
+function hello() {
+  console.log('Hello, world!');
+}
+```
+````
+
+This will render as:
+
+```javascript
+function hello() {
+  console.log('Hello, world!');
+}
+```
+
+## Supported Languages
+
+The syntax highlighter supports many languages, including:
+
+- JavaScript/TypeScript (`js`, `ts`, `jsx`, `tsx`)
+- HTML/CSS/SCSS (`html`, `css`, `scss`)
+- Python (`py`, `python`)
+- Go (`go`, `golang`)
+- Ruby (`rb`, `ruby`)
+- Rust (`rs`, `rust`)
+- Shell/Bash (`sh`, `bash`, `shell`)
+- JSON/YAML (`json`, `yml`, `yaml`)
+- SQL (`sql`)
+- C/C++ (`c`, `cpp`, `c++`)
+- Java (`java`)
+- PHP (`php`)
+- Swift (`swift`)
+- Kotlin (`kt`, `kotlin`)
+- And many more!
+
+## Adding Filenames
+
+You can add a filename to your code blocks by appending `:filename` to the language identifier:
+
+````md
+```javascript:app.js
+import express from 'express';
+const app = express();
+
+app.get('/', (req, res) => {
+  res.send('Hello World!');
+});
+
+app.listen(3000, () => {
+  console.log('Server running on port 3000');
+});
+```
+````
+
+This will render as:
+
+```javascript:app.js
+import express from 'express';
+const app = express();
+
+app.get('/', (req, res) => {
+  res.send('Hello World!');
+});
+
+app.listen(3000, () => {
+  console.log('Server running on port 3000');
+});
+```
+
+## Line Numbers
+
+Line numbers are displayed by default. You can toggle them using the button in the top-right corner of the code block.
+
+## Copying Code
+
+Each code block includes a copy button that allows users to easily copy the code to their clipboard.
+
+## Theme Support
+
+Code blocks automatically adapt to the current theme (light or dark mode), ensuring optimal readability in any environment.
+
+## Best Practices
+
+- Always specify the language for proper syntax highlighting
+- Use meaningful filenames when showing file-specific code
+- Keep code blocks concise and focused on the essential parts
+- Consider adding comments to explain complex logic
+- For very long code blocks, consider breaking them into smaller, focused examples
+
+By following these guidelines, you can create effective and visually appealing code examples in your documentation.

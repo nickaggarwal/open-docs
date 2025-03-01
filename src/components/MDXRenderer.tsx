@@ -1,8 +1,9 @@
-import React from 'react';
-import { Box, Typography, Link as MuiLink } from '@mui/material';
+import React, { useState, useEffect } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { Callout } from './Callout';
 import { CodeBlock } from './CodeBlock';
+// We need the import for the JSX preprocessor pattern matching, but not for direct use
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { TabGroup, Tab } from './Tabs';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
@@ -51,6 +52,99 @@ const preprocessMDXContent = (mdxContent: string): string => {
     }
   );
   
+  // Process HTML image tags to convert them to markdown with special data attributes
+  processedContent = processedContent.replace(
+    /<img\s+([^>]*)>/g,
+    (fullMatch, attributes) => {
+      // Extract src, height, width, noZoom attributes
+      const srcMatch = attributes.match(/src="([^"]*)"/);
+      const heightMatch = attributes.match(/height="([^"]*)"/);
+      const widthMatch = attributes.match(/width="([^"]*)"/);
+      const altMatch = attributes.match(/alt="([^"]*)"/);
+      const titleMatch = attributes.match(/title="([^"]*)"/);
+      const hasNoZoom = attributes.includes('noZoom');
+      const isLightOnly = attributes.includes('light-only') || attributes.includes('data-light-only');
+      const isDarkOnly = attributes.includes('dark-only') || attributes.includes('data-dark-only');
+      
+      if (!srcMatch) return fullMatch; // If no src, leave as is
+      
+      let src = srcMatch[1];
+      // Append mode markers to src if needed
+      if (isLightOnly) {
+        src += '#light-only';
+      } else if (isDarkOnly) {
+        src += '#dark-only';
+      }
+      
+      let markdown = `![${altMatch?.[1] || titleMatch?.[1] || ''}](${src}`;
+      
+      // Add title if available
+      if (titleMatch) {
+        markdown += ` "${titleMatch[1]}"`;
+      }
+      markdown += ')';
+      
+      // Add data attributes as HTML comments that we can parse later
+      const dataAttrs = [];
+      if (heightMatch) dataAttrs.push(`height="${heightMatch[1]}"`);
+      if (widthMatch) dataAttrs.push(`width="${widthMatch[1]}"`);
+      if (hasNoZoom) dataAttrs.push('noZoom="true"');
+      
+      if (dataAttrs.length > 0) {
+        markdown += `<!-- ${dataAttrs.join(' ')} -->`;
+      }
+      
+      return markdown;
+    }
+  );
+  
+  // Process HTML image tags wrapped in anchor tags
+  processedContent = processedContent.replace(
+    /<a\s+href="([^"]*)">\s*<img\s+([^>]*)>\s*<\/a>/g,
+    (fullMatch, href, imgAttributes) => {
+      // Extract src, height, width, noZoom attributes from the img tag
+      const srcMatch = imgAttributes.match(/src="([^"]*)"/);
+      const heightMatch = imgAttributes.match(/height="([^"]*)"/);
+      const widthMatch = imgAttributes.match(/width="([^"]*)"/);
+      const altMatch = imgAttributes.match(/alt="([^"]*)"/);
+      const titleMatch = imgAttributes.match(/title="([^"]*)"/);
+      const hasNoZoom = imgAttributes.includes('noZoom');
+      const isLightOnly = imgAttributes.includes('light-only') || imgAttributes.includes('data-light-only');
+      const isDarkOnly = imgAttributes.includes('dark-only') || imgAttributes.includes('data-dark-only');
+      
+      if (!srcMatch) return fullMatch; // If no src, leave as is
+      
+      let src = srcMatch[1];
+      // Append mode markers to src if needed
+      if (isLightOnly) {
+        src += '#light-only';
+      } else if (isDarkOnly) {
+        src += '#dark-only';
+      }
+      
+      // For linked images, create a special markdown format
+      let markdown = `[![${altMatch?.[1] || titleMatch?.[1] || ''}](${src}`;
+      
+      // Add title if available
+      if (titleMatch) {
+        markdown += ` "${titleMatch[1]}"`;
+      }
+      markdown += `)](${href})`;
+      
+      // Add data attributes as HTML comments that we can parse later
+      const dataAttrs = [];
+      if (heightMatch) dataAttrs.push(`height="${heightMatch[1]}"`);
+      if (widthMatch) dataAttrs.push(`width="${widthMatch[1]}"`);
+      if (hasNoZoom) dataAttrs.push('noZoom="true"');
+      
+      if (dataAttrs.length > 0) {
+        markdown += `<!-- ${dataAttrs.join(' ')} -->`;
+      }
+      
+      return markdown;
+    }
+  );
+  
   // Remove any remaining JSX component imports
   processedContent = processedContent.replace(/import.*?from.*?;/g, '');
   
@@ -73,6 +167,131 @@ interface CodeBlockProps extends MarkdownComponentProps {
   className?: string;
 }
 
+interface ImageProps extends MarkdownComponentProps {
+  src?: string;
+  alt?: string;
+  title?: string;
+  noZoom?: boolean;
+  className?: string;
+  height?: string | number;
+  width?: string | number;
+}
+
+/**
+ * Image component with zoom functionality
+ */
+const ImageComponent: React.FC<ImageProps> = ({ src, alt, title, noZoom, className, height, width, ...rest }) => {
+  const [open, setOpen] = useState(false);
+  // State to track theme changes
+  const [currentTheme, setCurrentTheme] = useState(document.documentElement.getAttribute('data-theme') || 'light');
+  
+  // Listen for theme changes
+  useEffect(() => {
+    const handleThemeChange = () => {
+      setCurrentTheme(document.documentElement.getAttribute('data-theme') || 'light');
+    };
+    
+    // Create a MutationObserver to watch for attribute changes on the html element
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.type === 'attributes' && mutation.attributeName === 'data-theme') {
+          handleThemeChange();
+        }
+      });
+    });
+    
+    // Start observing
+    observer.observe(document.documentElement, { attributes: true });
+    
+    // Clean up
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
+  
+  // Determine if we're in dark mode
+  const isDarkMode = currentTheme === 'dark';
+  
+  // Check if this is a dark/light mode specific image
+  const isLightOnlyImage = src?.includes('#light-only') || className?.includes('light-only');
+  const isDarkOnlyImage = src?.includes('#dark-only') || className?.includes('dark-only');
+  
+  // If this is a mode-specific image and doesn't match current mode, don't render
+  if ((isLightOnlyImage && isDarkMode) || (isDarkOnlyImage && !isDarkMode)) {
+    return null;
+  }
+  
+  // Clean up the src URL by removing mode-specific tags
+  const cleanSrc = src?.replace(/#(light|dark)-only/g, '') || '';
+  
+  const handleOpen = () => {
+    if (!noZoom) {
+      setOpen(true);
+    }
+  };
+  
+  const handleClose = () => {
+    setOpen(false);
+  };
+  
+  return (
+    <>
+      <img
+        src={cleanSrc}
+        alt={alt || title || 'Image'}
+        title={title || alt}
+        className={`${className || ''} img-fluid`}
+        style={{ 
+          height: height ? `${height}px` : 'auto',
+          width: width ? `${width}px` : 'auto',
+          cursor: noZoom ? 'default' : 'zoom-in',
+          maxWidth: '100%',
+          borderRadius: '4px'
+        }}
+        onClick={handleOpen}
+        {...(noZoom && { 'data-no-zoom': 'true' })}
+        {...rest}
+      />
+      
+      {!noZoom && open && (
+        <div 
+          className="modal show" 
+          style={{ display: 'block', backgroundColor: 'rgba(0,0,0,0.5)' }}
+          onClick={handleClose}
+        >
+          <div 
+            className="modal-dialog modal-dialog-centered modal-xl"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="modal-content">
+              <div className="modal-header">
+                <button 
+                  type="button" 
+                  className="btn-close" 
+                  onClick={handleClose}
+                  aria-label="Close"
+                ></button>
+              </div>
+              <div className="modal-body text-center">
+                <img
+                  src={cleanSrc}
+                  alt={alt || title || 'Image'}
+                  className="img-fluid"
+                  style={{ 
+                    maxHeight: '80vh',
+                    objectFit: 'contain',
+                    borderRadius: '4px'
+                  }}
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  );
+};
+
 /**
  * MDX Renderer Component
  * 
@@ -82,104 +301,77 @@ const MDXRenderer: React.FC<MDXRendererProps> = ({ content }) => {
   const processedContent = preprocessMDXContent(content);
   
   return (
-    <Box>
+    <div className="mdx-content">
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         components={{
-          h1: ({ children }: MarkdownComponentProps) => (
-            <Typography variant="h1" component="h1" gutterBottom>
-              {children}
-            </Typography>
-          ),
-          h2: ({ children }: MarkdownComponentProps) => (
-            <Typography variant="h2" component="h2" gutterBottom>
-              {children}
-            </Typography>
-          ),
-          h3: ({ children }: MarkdownComponentProps) => (
-            <Typography variant="h3" component="h3" gutterBottom>
-              {children}
-            </Typography>
-          ),
-          h4: ({ children }: MarkdownComponentProps) => (
-            <Typography variant="h4" component="h4" gutterBottom>
-              {children}
-            </Typography>
-          ),
-          h5: ({ children }: MarkdownComponentProps) => (
-            <Typography variant="h5" component="h5" gutterBottom>
-              {children}
-            </Typography>
-          ),
-          h6: ({ children }: MarkdownComponentProps) => (
-            <Typography variant="h6" component="h6" gutterBottom>
-              {children}
-            </Typography>
-          ),
-          p: ({ children }: MarkdownComponentProps) => (
-            <Typography paragraph component="p">
-              {children}
-            </Typography>
-          ),
-          a: ({ href, children }: MarkdownComponentProps) => {
-            const isExternal = href?.startsWith('http');
-            return isExternal ? (
-              <MuiLink href={href} target="_blank" rel="noopener noreferrer">
+          h1: ({ children, ...props }: MarkdownComponentProps) => {
+            // Convert children to string safely for ID generation
+            const headingText = Array.isArray(children) 
+              ? children.join('') 
+              : String(children || '');
+            const id = headingText.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
+            
+            return (
+              <h1 id={id} className="h1" {...props}>
+                {id && (
+                  <a href={`#${id}`} className="anchor-link" aria-hidden="true">
+                    #
+                  </a>
+                )}
                 {children}
-              </MuiLink>
-            ) : (
-              <MuiLink component={RouterLink} to={href || '#'}>
-                {children}
-              </MuiLink>
+              </h1>
             );
           },
-          code: ({ inline, className, children }: CodeBlockProps) => {
+          h2: ({ children, ...props }: MarkdownComponentProps) => {
+            // Convert children to string safely for ID generation
+            const headingText = Array.isArray(children) 
+              ? children.join('') 
+              : String(children || '');
+            const id = headingText.toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
+            
+            return (
+              <h2 id={id} className="h2 mb-3" {...props}>
+                {id && (
+                  <a href={`#${id}`} className="anchor-link" aria-hidden="true">
+                    #
+                  </a>
+                )}
+                {children}
+              </h2>
+            );
+          },
+          code: ({ inline, className, children, ...props }: CodeBlockProps) => {
             const match = /language-(\w+)/.exec(className || '');
-            return !inline && match ? (
-              <CodeBlock language={match[1]}>
-                {String(children).replace(/\n$/, '')}
-              </CodeBlock>
-            ) : (
-              <Typography
-                component="code"
-                sx={{
-                  fontFamily: 'monospace',
-                  backgroundColor: 'rgba(0, 0, 0, 0.05)',
-                  padding: '2px 4px',
-                  borderRadius: '4px',
-                  fontSize: '0.9em',
-                }}
-              >
+            
+            if (!inline && match) {
+              // Check if there's a filename in the language (format: language:filename)
+              const languageParts = match[1].split(':');
+              const language = languageParts[0];
+              const filename = languageParts.length > 1 ? languageParts[1] : undefined;
+              
+              return (
+                <CodeBlock language={language} filename={filename}>
+                  {String(children).replace(/\n$/, '')}
+                </CodeBlock>
+              );
+            } 
+            
+            return (
+              <code className={className} {...props}>
                 {children}
-              </Typography>
+              </code>
             );
           },
-          blockquote: ({ children }: MarkdownComponentProps) => {
-            // Check if this is a callout (from our preprocessing)
-            const childrenArray = React.Children.toArray(children);
-            let type = 'info';
-            let content = children;
-            
-            if (childrenArray.length > 0 && React.isValidElement(childrenArray[0])) {
-              const firstChild = childrenArray[0];
-              if (firstChild.props?.children?.[0]?.startsWith && firstChild.props.children[0].startsWith('**')) {
-                const match = /\*\*([A-Z]+)\*\*: (.*)/.exec(firstChild.props.children[0]);
-                if (match) {
-                  type = match[1].toLowerCase();
-                  // This approach avoids manipulating React elements directly which can cause issues
-                  return <Callout type={type as any}>{match[2]}</Callout>;
-                }
-              }
-            }
-            
-            return <Callout type={type as any}>{content}</Callout>;
-          },
+          img: ({ src, alt, title, noZoom, className, height, width, ...rest }: ImageProps) => (
+            <ImageComponent src={src} alt={alt} title={title} noZoom={noZoom} className={className} height={height} width={width} {...rest} />
+          )
         }}
       >
         {processedContent}
       </ReactMarkdown>
-    </Box>
+    </div>
   );
 };
 
-export default MDXRenderer; 
+export default MDXRenderer;

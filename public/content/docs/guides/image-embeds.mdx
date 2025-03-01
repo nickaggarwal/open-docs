@@ -1,0 +1,97 @@
+---
+title: 'Image Embeds'
+description: 'Learn how to embed and customize images in your documentation'
+---
+
+# Image Embeds
+
+This guide explains how to embed and customize images in your Open Docs documentation.
+
+## Basic Images
+
+The simplest way to add an image is to use Markdown syntax:
+
+```markdown
+![Alt text](/path/to/image.jpg)
+```
+
+This renders a responsive image that will adjust to the width of the container.
+
+## Customizing Images
+
+### Setting Dimensions
+
+You can set custom dimensions for your images using HTML:
+
+```html
+<img height="200" src="/path/to/image.jpg" alt="Description of image" />
+```
+
+This will render the image with a height of 200 pixels while maintaining the aspect ratio.
+
+To set both height and width:
+
+```html
+<img height="200" width="300" src="/path/to/image.jpg" alt="Description of image" />
+```
+
+### Disabling Zoom
+
+By default, images are zoomable when clicked. To disable this behavior, add the `noZoom` attribute:
+
+```html
+<img height="200" noZoom src="/path/to/image.jpg" alt="Description of image" />
+```
+
+### Linking Images
+
+You can make images clickable by wrapping them in an anchor tag:
+
+```html
+<a href="https://example.com">
+  <img src="/path/to/image.jpg" alt="Clickable image" />
+</a>
+```
+
+## Dark Mode Support
+
+### Mode-Specific Images
+
+You can display different images in light and dark modes using special attributes:
+
+```html
+<img src="/path/to/light-image.jpg" light-only alt="Light mode only" />
+<img src="/path/to/dark-image.jpg" dark-only alt="Dark mode only" />
+```
+
+Only one image will be visible at a time, depending on the current theme.
+
+## Examples
+
+### Basic Image
+![Open Docs Logo](/logo.png)
+
+### Cat Image Example
+![A cute cat](/images/cat.jpg)
+
+### Image with Custom Height
+<img height="100" src="/logo.png" alt="Open Docs Logo with custom height" />
+
+### Image without Zoom
+<img height="100" noZoom src="/logo.png" alt="Non-zoomable Open Docs Logo" />
+
+### Linked Image
+<a href="https://github.com">
+  <img height="100" src="/logo.png" alt="Clickable Open Docs Logo" />
+</a>
+
+### Dark/Light Mode Specific Images
+<img src="/images/landscape-light.jpg" light-only alt="Beautiful sunset - visible in light mode only" width="400" />
+<img src="/images/landscape-dark.jpg" dark-only alt="Night sky with moon - visible in dark mode only" width="400" />
+
+## Tips
+
+- Use SVG images when possible for better scaling
+- Optimize your images for web to reduce page load times
+- Always include descriptive alt text for accessibility
+- Consider how your images will appear on both desktop and mobile devices 

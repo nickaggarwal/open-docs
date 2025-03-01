@@ -26,63 +26,42 @@ interface TabGroupProps {
 
 export const TabGroup: React.FC<TabGroupProps> = ({ children }) => {
   const [activeTab, setActiveTab] = useState(0);
-
-  // Convert children to array for easier handling
-  const childrenArray = React.Children.toArray(children);
   
-  // Extract tab titles from children
-  const tabTitles = childrenArray.map((child) => {
-    if (React.isValidElement(child) && 'title' in child.props) {
-      return child.props.title;
+  // Extract tab titles and content
+  const tabs: { title: string; content: React.ReactNode }[] = [];
+  React.Children.forEach(children, (child) => {
+    if (React.isValidElement(child) && child.type === Tab) {
+      tabs.push({
+        title: child.props.title,
+        content: child.props.children,
+      });
     }
-    return 'Untitled';
   });
-
-  const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
-    setActiveTab(newValue);
-  };
-
+  
   return (
-    <TabGroupContext.Provider value={{ activeTab, setActiveTab }}>
-      <Box sx={{ width: '100%', mb: 3 }}>
-        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-          <Tabs 
-            value={activeTab} 
-            onChange={handleChange} 
-            aria-label="code tabs"
-            variant="scrollable"
-            scrollButtons="auto"
-            sx={{
-              '& .MuiTab-root': {
-                textTransform: 'none',
-                fontWeight: 500,
-                fontSize: '0.9rem',
-                minWidth: 100,
-              },
-            }}
-          >
-            {tabTitles.map((title, index) => (
-              <MuiTab key={index} label={title} id={`tab-${index}`} aria-controls={`tabpanel-${index}`} />
-            ))}
-          </Tabs>
-        </Box>
-        {childrenArray.map((child, index) => (
-          <Box
-            key={index}
-            role="tabpanel"
-            hidden={activeTab !== index}
-            id={`tabpanel-${index}`}
-            aria-labelledby={`tab-${index}`}
-            sx={{ pt: 2 }}
-          >
-            {activeTab === index && (
-              <Typography component="div">
-                {child}
-              </Typography>
-            )}
-          </Box>
+    <div className="mt-4 mb-5">
+      <ul className="nav nav-tabs">
+        {tabs.map((tab, index) => (
+          <li className="nav-item" key={index}>
+            <button
+              className={`nav-link ${activeTab === index ? 'active' : ''}`}
+              onClick={() => setActiveTab(index)}
+            >
+              {tab.title}
+            </button>
+          </li>
         ))}
-      </Box>
-    </TabGroupContext.Provider>
+      </ul>
+      <div className="tab-content p-3 border border-top-0 rounded-bottom">
+        {tabs.map((tab, index) => (
+          <div
+            key={index}
+            className={`tab-pane ${activeTab === index ? 'show active' : ''}`}
+          >
+            {tab.content}
+          </div>
+        ))}
+      </div>
+    </div>
   );
 }; 

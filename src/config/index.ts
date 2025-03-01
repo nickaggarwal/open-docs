@@ -7,11 +7,12 @@ export interface PageLink {
 }
 
 export interface NavigationItem {
-  type: 'category' | 'doc';
+  type: 'category' | 'doc' | 'link' | 'section';
   id?: string;
   label: string;
   items?: NavigationItem[];
   to?: string;
+  href?: string;
 }
 
 export interface TabItem {
@@ -62,68 +63,83 @@ export interface SiteConfig {
 
 // Process navigation items to convert them to the format expected by the sidebar
 const processNavigationItems = (navigationConfig: any[]): { docs: NavigationItem[], api: NavigationItem[] } => {
+  // Process the navigation items from the config
   const docsItems: NavigationItem[] = [];
   const apiItems: NavigationItem[] = [];
 
-  navigationConfig.forEach(section => {
-    const categoryItem: NavigationItem = {
-      type: 'category',
-      label: section.group || 'Main',
-      items: []
-    };
-
-    // Process pages in this section
-    section.pages.forEach((page: string | any) => {
-      if (typeof page === 'string') {
-        // Simple page reference
-        const parts = page.split('/');
-        const id = parts[parts.length - 1];
-        const label = id.charAt(0).toUpperCase() + id.slice(1).replace(/-/g, ' ');
-        
-        categoryItem.items!.push({
+  navigationConfig.forEach(navGroup => {
+    if (navGroup.group === '') {
+      // Top-level pages without a group go directly into the navigation
+      navGroup.pages.forEach((page: string) => {
+        const pagePath = page.startsWith('/') ? page : `/${page}`;
+        docsItems.push({
           type: 'doc',
-          id,
-          label,
-          to: `/docs/${page}`
+          label: getPageTitle(page),
+          to: `/docs${pagePath}`.replace(/\.mdx?$/, ''),
         });
-      } else if (typeof page === 'object') {
-        // Nested category
-        const nestedCategory: NavigationItem = {
-          type: 'category',
-          label: page.group,
-          items: []
-        };
-
-        // Process nested pages
-        page.pages.forEach((nestedPage: string) => {
-          const parts = nestedPage.split('/');
-          const id = parts[parts.length - 1];
-          const label = id.charAt(0).toUpperCase() + id.slice(1).replace(/-/g, ' ');
-          
-          nestedCategory.items!.push({
+      });
+    } else {
+      // Create a section for each top-level group
+      const sectionItems: NavigationItem[] = [];
+      
+      navGroup.pages.forEach((page: any) => {
+        if (typeof page === 'string') {
+          // Simple page
+          const pagePath = page.startsWith('/') ? page : `/${page}`;
+          sectionItems.push({
             type: 'doc',
-            id,
-            label,
-            to: `/docs/${nestedPage}`
+            label: getPageTitle(page),
+            to: `/docs${pagePath}`.replace(/\.mdx?$/, ''),
           });
+        } else if (typeof page === 'object' && page.group) {
+          // Nested group - this is converted to a category
+          const categoryItems: NavigationItem[] = [];
+          
+          page.pages.forEach((subPage: string) => {
+            const pagePath = subPage.startsWith('/') ? subPage : `/${subPage}`;
+            categoryItems.push({
+              type: 'doc',
+              label: getPageTitle(subPage),
+              to: `/docs${pagePath}`.replace(/\.mdx?$/, ''),
+            });
+          });
+          
+          sectionItems.push({
+            type: 'category',
+            label: page.group,
+            items: categoryItems,
+          });
+        }
+      });
+      
+      // Add section with its items to the appropriate navigation
+      if (navGroup.group.toLowerCase().includes('api')) {
+        apiItems.push({
+          type: 'section',
+          label: navGroup.group,
+          items: sectionItems,
         });
-
-        categoryItem.items!.push(nestedCategory);
-      }
-    });
-
-    // Only add categories with items
-    if (categoryItem.items!.length > 0) {
-      // Determine if this is for docs or API based on the group name or content
-      if (section.group.toLowerCase().includes('api')) {
-        apiItems.push(categoryItem);
       } else {
-        docsItems.push(categoryItem);
+        docsItems.push({
+          type: 'section',
+          label: navGroup.group,
+          items: sectionItems,
+        });
       }
     }
   });
 
   return { docs: docsItems, api: apiItems };
+};
+
+// Helper to convert slug to title (e.g. "getting-started/installation" -> "Installation")
+const getPageTitle = (page: string): string => {
+  const parts = page.split('/');
+  const lastPart = parts[parts.length - 1];
+  return lastPart
+    .replace(/[-_]/g, ' ')
+    .replace(/\b\w/g, c => c.toUpperCase())
+    .replace(/mdx?$/, '');
 };
 
 // Process tabs to convert them to the format expected by the top navigation

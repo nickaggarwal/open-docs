@@ -3,6 +3,18 @@
  * This file contains global styles for the Open Docs application
  */
 
+/* Import Inter font for headings */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+/* Import Bootstrap CSS */
+@import 'bootstrap/dist/css/bootstrap.min.css';
+
+/* Import Bootstrap Icons */
+@import 'bootstrap-icons/font/bootstrap-icons.css';
+
+/* Import Material Icons */
+@import url('https://fonts.googleapis.com/css2?family=Material+Icons+Outlined&display=swap');
+
 /* Theme Variables */
 :root {
   --primary-color: #2E8555;
@@ -22,19 +34,67 @@
   --primary-color: #4CAF50;
   --primary-light-color: #81C784;
   --primary-dark-color: #2E8555;
-  --background-color: #111827;
-  --paper-color: #1f2937;
+  --background-color: #000000;
+  --paper-color: #0a0a0a;
   --text-color: #f9fafb;
   --text-secondary-color: #9ca3af;
-  --border-color: #374151;
+  --border-color: #1e1e1e;
   --hover-color: rgba(255, 255, 255, 0.04);
   --active-color: rgba(76, 175, 80, 0.08);
 }
 
-/* Layout Fixes - Overrides MUI specific classes */
-.css-1a6xp80 {
-  margin-left: 20px !important;
+/* Sidebar Styles - Mintlify Inspired */
+.sidebar-nav {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
 }
+
+.search-box {
+  border-radius: 25px;
+  overflow: hidden;
+}
+
+.search-box .form-control, 
+.search-box .input-group-text {
+  border-radius: 0;
+  font-size: 0.9rem;
+}
+
+.search-box .form-control {
+  box-shadow: none;
+}
+
+.search-box .form-control:focus {
+  box-shadow: none;
+  border-color: var(--border-color);
+}
+
+.nav-item {
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.nav-item:hover {
+  background-color: var(--hover-color);
+}
+
+.active-nav-item {
+  color: var(--primary-color);
+  background-color: var(--active-color);
+}
+
+/* Additional Mintlify-style sidebar spacing */
+.sidebar-content {
+  padding-right: 0.5rem;
+}
+
+/* Better styling for section headers in the sidebar */
+.text-uppercase.text-secondary.small.fw-semibold {
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.5rem;
+}
+
+/* Remove Material UI Overrides - no longer needed with Bootstrap */
 
 /* Base Styles */
 body {
@@ -78,4 +138,63 @@ a {
 
 a:hover {
   text-decoration: underline;
+}
+
+/* Headings with anchor links - Inferless style */
+h1, h2, h3, h4, h5, h6 {
+  position: relative;
+}
+
+h1 {
+  scroll-margin-top: 80px;
+}
+
+h2 {
+  scroll-margin-top: 152px;
+}
+
+h1 a, h2 a, h3 a, h4 a, h5 a, h6 a {
+  text-decoration: none;
+  color: inherit;
+}
+
+h1:hover .anchor-link,
+h2:hover .anchor-link,
+h3:hover .anchor-link {
+  opacity: 1;
+}
+
+.anchor-link {
+  position: absolute;
+  margin-left: -1em;
+  opacity: 0;
+  padding-right: 0.5em;
+  color: var(--primary-color);
+  transition: opacity 0.2s ease-in-out;
+}
+
+/* Enhanced styling for h1 and h2 - Inferless inspired */
+h1 {
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: -0.75px;
+  line-height: 36px;
+  margin: 0;
+  color: var(--text-color);
+  font-family: '__Inter_e5ab12', '__Inter_Fallback_e5ab12', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+}
+
+h2 {
+  font-size: 24px;
+  font-weight: 600;
+  letter-spacing: -0.6px;
+  line-height: 32px;
+  margin-top: 0;
+  margin-bottom: 16px;
+  color: var(--text-color);
+  border: 0;
+  display: flex;
+  font-family: '__Inter_e5ab12', '__Inter_Fallback_e5ab12', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
 } 
