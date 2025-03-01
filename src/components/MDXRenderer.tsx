@@ -1,6 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
-import { Callout } from './Callout';
 import { CodeBlock } from './CodeBlock';
 // We need the import for the JSX preprocessor pattern matching, but not for direct use
 // eslint-disable-next-line @typescript-eslint/no-unused-vars

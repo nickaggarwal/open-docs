@@ -91,10 +91,8 @@ const NavigationSidebar: React.FC<NavigationSidebarProps> = ({ items, currentPat
     }
     
     if (item.type === 'category') {
-      // Use Mintlify style icons for categories
-      return isCategoryExpanded(item) ? 
-        <i className="bi bi-chevron-down"></i> : 
-        <i className="bi bi-chevron-right"></i>;
+      // Don't render an icon for categories - we'll use only the right-aligned chevron
+      return null;
     }
     
     // Use icons similar to Mintlify for different content types

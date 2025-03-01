@@ -32,16 +32,12 @@
       "url": "guides"
     },
     {
-      "name": "API",
+      "name": "API Reference",
       "url": "api"
     },
     {
       "name": "Changelog",
       "url": "changelog"
-    },
-    {
-      "name": "References",
-      "url": "references"
     }
   ],
   
@@ -57,28 +53,6 @@
         "getting-started/configuration",
         "getting-started/quickstart",
         "getting-started/troubleshooting"
-      ]
-    },
-    {
-      "group": "Core Concepts",
-      "pages": [
-        "core-concepts/architecture",
-        "core-concepts/data-model",
-        {
-          "group": "Components",
-          "pages": [
-            "core-concepts/components/overview",
-            "core-concepts/components/lifecycle",
-            "core-concepts/components/styling"
-          ]
-        },
-        {
-          "group": "State Management",
-          "pages": [
-            "core-concepts/state/overview",
-            "core-concepts/state/actions"
-          ]
-        }
       ]
     },
     {

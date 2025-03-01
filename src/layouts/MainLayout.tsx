@@ -1,6 +1,6 @@
 import React, { useState, useEffect, ReactNode } from 'react';
 import { useLocation, Link as RouterLink } from 'react-router-dom';
-import { Container, Navbar, Nav, Button, Offcanvas, Form } from 'react-bootstrap';
+import { Container, Navbar, Nav, Button, Offcanvas } from 'react-bootstrap';
 import NavigationSidebar from '../components/Sidebar';
 import { navigationConfig, siteConfig } from '../config';
 
@@ -41,21 +41,85 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, toggleTheme, mode = '
   // Get navigation items based on current path
   const getNavigationItems = () => {
     console.log('Getting navigation items for path:', currentPath);
-    console.log('Navigation config:', navigationConfig);
     
     let navigationItems;
     
     // Determine which navigation items to show based on the current path
     if (currentPath.startsWith('/api')) {
+      // API has its own dedicated sidebar items
       console.log('Using API navigation items');
       navigationItems = navigationConfig.sidebar.api;
+    } else if (currentPath.startsWith('/docs/')) {
+      // For docs routes, check if we're in a specific section that matches a tab
+      
+      // Automatically generate tab mappings from site configuration
+      // This makes it work for any tabs that get added in the future
+      const tabMappings = siteConfig.tabs.map(tab => ({
+        path: `/docs/${tab.url}/`,
+        label: tab.name
+      }));
+      
+      // Add any special case mappings that don't follow the standard pattern
+      interface TabMapping {
+        path: string;
+        label: string;
+      }
+
+      const specialMappings: TabMapping[] = [
+        // Add special mappings here if needed
+      ];
+      
+      const allMappings = [...tabMappings, ...specialMappings];
+      console.log('Tab mappings:', allMappings);
+      
+      // Find if current path matches any of our tab paths
+      const matchedTab = allMappings.find(tab => currentPath.includes(tab.path));
+      
+      if (matchedTab) {
+        // If in a tab section, only show that section in sidebar
+        console.log(`Using ${matchedTab.label} navigation items only`);
+        navigationItems = navigationConfig.sidebar.docs.filter(item => 
+          item.label === matchedTab.label
+        );
+        
+        // If no items found with exact match, try case-insensitive match
+        if (navigationItems.length === 0) {
+          navigationItems = navigationConfig.sidebar.docs.filter(item => 
+            item.label.toLowerCase() === matchedTab.label.toLowerCase()
+          );
+        }
+        
+        // If still no items found, fallback to all docs
+        if (navigationItems.length === 0) {
+          console.log(`No navigation items found for ${matchedTab.label}, using all docs`);
+          navigationItems = navigationConfig.sidebar.docs;
+        }
+      } else {
+        // Default to all docs for other doc routes
+        console.log('Using all docs navigation items');
+        navigationItems = navigationConfig.sidebar.docs;
+      }
     } else {
-      // Default to docs for all other paths
-      console.log('Using docs navigation items');
-      navigationItems = navigationConfig.sidebar.docs;
+      // Default to docs for non-docs routes (like homepage) or general docs routes
+      // But exclude tab-specific sections to keep the main sidebar clean
+      console.log('Using filtered docs navigation items for main sidebar');
+      
+      // Get all tab labels to filter them out from general sidebar
+      const tabLabels = siteConfig.tabs.map(tab => tab.name);
+      console.log('Tab labels to filter out from main sidebar:', tabLabels);
+      
+      // Filter out tab-specific sections from general navigation
+      navigationItems = navigationConfig.sidebar.docs.filter(item => 
+        !tabLabels.includes(item.label)
+      );
+      
+      // If we accidentally filtered everything out, show all docs as fallback
+      if (navigationItems.length === 0) {
+        console.log('All items were filtered - falling back to all docs');
+        navigationItems = navigationConfig.sidebar.docs;
+      }
     }
     
-    console.log('Navigation items:', JSON.stringify(navigationItems, null, 2));
     return navigationItems;
   };
 
