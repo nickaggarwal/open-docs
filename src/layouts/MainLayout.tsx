@@ -44,6 +44,10 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, toggleTheme, mode = '
     
     let navigationItems;
     
+    // Get all tab labels to filter them out from general sidebar
+    const tabLabels = siteConfig.tabs.map(tab => tab.name);
+    console.log('Tab labels to filter out from main sidebar:', tabLabels);
+    
     // Determine which navigation items to show based on the current path
     if (currentPath.startsWith('/api')) {
       // API has its own dedicated sidebar items
@@ -54,15 +58,22 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, toggleTheme, mode = '
       
       // Automatically generate tab mappings from site configuration
       // This makes it work for any tabs that get added in the future
-      const tabMappings = siteConfig.tabs.map(tab => ({
-        path: `/docs/${tab.url}/`,
-        label: tab.name
-      }));
+      const tabMappings = siteConfig.tabs.map(tab => {
+        // Using the tab URL directly since we fixed the mismatches in the config
+        const contentPath = tab.url;
+        
+        return {
+          path: `/docs/${contentPath}/`,
+          label: tab.name,
+          url: tab.url
+        };
+      });
       
       // Add any special case mappings that don't follow the standard pattern
       interface TabMapping {
         path: string;
         label: string;
+        url?: string;
       }
 
       const specialMappings: TabMapping[] = [
@@ -73,7 +84,10 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, toggleTheme, mode = '
       console.log('Tab mappings:', allMappings);
       
       // Find if current path matches any of our tab paths
-      const matchedTab = allMappings.find(tab => currentPath.includes(tab.path));
+      const matchedTab = allMappings.find(tab => 
+        currentPath.includes(tab.path) || 
+        (tab.url && currentPath === `/${tab.url}`)
+      );
       
       if (matchedTab) {
         // If in a tab section, only show that section in sidebar
@@ -95,25 +109,32 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, toggleTheme, mode = '
           navigationItems = navigationConfig.sidebar.docs;
         }
       } else {
-        // Default to all docs for other doc routes
-        console.log('Using all docs navigation items');
-        navigationItems = navigationConfig.sidebar.docs;
+        // For general docs routes (like /docs/introduction), 
+        // filter out tab-specific sections to keep the sidebar clean
+        console.log('Using filtered docs navigation items for general docs route');
+        
+        // Filter out tab-specific sections from general navigation
+        navigationItems = navigationConfig.sidebar.docs.filter(item => 
+          !tabLabels.includes(item.label)
+        );
+        
+        // If we accidentally filtered everything out, fallback to all docs
+        if (navigationItems.length === 0) {
+          console.log('All items were filtered - falling back to all docs');
+          navigationItems = navigationConfig.sidebar.docs;
+        }
       }
     } else {
-      // Default to docs for non-docs routes (like homepage) or general docs routes
+      // Default to docs for non-docs routes (like homepage)
       // But exclude tab-specific sections to keep the main sidebar clean
       console.log('Using filtered docs navigation items for main sidebar');
-      
-      // Get all tab labels to filter them out from general sidebar
-      const tabLabels = siteConfig.tabs.map(tab => tab.name);
-      console.log('Tab labels to filter out from main sidebar:', tabLabels);
       
       // Filter out tab-specific sections from general navigation
       navigationItems = navigationConfig.sidebar.docs.filter(item => 
         !tabLabels.includes(item.label)
       );
       
-      // If we accidentally filtered everything out, show all docs as fallback
+      // If we accidentally filtered everything out, fallback to all docs
       if (navigationItems.length === 0) {
         console.log('All items were filtered - falling back to all docs');
         navigationItems = navigationConfig.sidebar.docs;

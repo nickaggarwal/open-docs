@@ -35,6 +35,40 @@ function App() {
   // Find first doc and API page for default navigation
   const defaultDocPage = navigationConfig.sidebar.docs[0]?.items?.[0]?.id || 'introduction';
   const defaultApiPage = navigationConfig.sidebar.api[0]?.items?.[0]?.id || 'overview';
+  
+  // Helper function to find the default page for a specific tab/section
+  const findDefaultPageForSection = (sectionName: string): string => {
+    // First, look for the section in the navigation config
+    const section = navigationConfig.sidebar.docs.find(
+      item => item.label === sectionName
+    );
+    
+    if (section && section.items && section.items.length > 0) {
+      // If we found the section and it has items, return the first item's ID or path
+      if (section.items[0].to) {
+        // Extract the ID from the path (removing the /docs/ prefix)
+        return section.items[0].to.replace(/^\/docs\//, '');
+      }
+    }
+    
+    // Fallback: Check the navigation from the raw config
+    const rawSection = siteConfig.navigation.find(
+      nav => nav.group === sectionName
+    );
+    
+    if (rawSection && rawSection.pages && rawSection.pages.length > 0) {
+      // Get the first page
+      const firstPage = typeof rawSection.pages[0] === 'string' 
+        ? rawSection.pages[0] 
+        : rawSection.pages[0].pages ? rawSection.pages[0].pages[0] : '';
+      
+      // For nested structure, extract just the path
+      return firstPage;
+    }
+    
+    // If all else fails, return the section name in lowercase as a fallback
+    return sectionName.toLowerCase();
+  };
 
   console.log('Default doc page:', defaultDocPage);
   console.log('Default API page:', defaultApiPage);
@@ -83,10 +117,18 @@ function App() {
             element={<DocPage />} 
           />
           
-          {/* Additional tab routes */}
-          <Route path="/guides" element={<Navigate to="/docs/guides/creating-pages" replace />} />
-          <Route path="/changelog" element={<Navigate to="/docs/changelog/overview" replace />} />
-          <Route path="/references" element={<Navigate to="/docs/resources/faq" replace />} />
+          {/* Dynamically generated tab routes */}
+          {siteConfig.tabs.map(tab => (
+            <Route 
+              key={tab.url}
+              path={`/${tab.url}`} 
+              element={
+                tab.url === 'api'
+                  ? <Navigate to={`/api/${defaultApiPage}`} replace />
+                  : <Navigate to={`/docs/${findDefaultPageForSection(tab.name)}`} replace />
+              } 
+            />
+          ))}
           
           {/* Fallback route */}
           <Route path="*" element={<Navigate to="/" replace />} />

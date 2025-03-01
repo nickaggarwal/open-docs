@@ -28,8 +28,8 @@
   
   "tabs": [
     {
-      "name": "Guides",
-      "url": "guides"
+      "name": "Advanced",
+      "url": "advanced"
     },
     {
       "name": "API Reference",
