@@ -1,104 +1,151 @@
 ---
-title: 'Using Code Blocks'
-description: 'Learn how to embed and customize code blocks in your Open Docs documentation'
+title: 'Image Embeds'
+description: 'Learn how to add and customize images in your Open Docs documentation'
 ---
 
-# Using Code Blocks
+# Image Embeds
 
-Code blocks are essential for technical documentation. Open Docs provides a rich code block experience with syntax highlighting, line numbers, and more.
+Images are a powerful way to enhance your documentation with visual information. Open Docs provides several ways to embed and customize images.
 
-## Basic Code Block
+## Basic Image Embedding
 
-To create a basic code block, use triple backticks followed by the language identifier:
+To add an image to your documentation, use the standard Markdown syntax:
 
-````md
-```javascript
-function hello() {
-  console.log('Hello, world!');
-}
-```
-````
-
-This will render as:
-
-```javascript
-function hello() {
-  console.log('Hello, world!');
-}
+```md
+![Alt text](path/to/image.png)
 ```
 
-## Supported Languages
+You can also add a title to provide additional information when users hover over the image:
 
-The syntax highlighter supports many languages, including:
-
-- JavaScript/TypeScript (`js`, `ts`, `jsx`, `tsx`)
-- HTML/CSS/SCSS (`html`, `css`, `scss`)
-- Python (`py`, `python`)
-- Go (`go`, `golang`)
-- Ruby (`rb`, `ruby`)
-- Rust (`rs`, `rust`)
-- Shell/Bash (`sh`, `bash`, `shell`)
-- JSON/YAML (`json`, `yml`, `yaml`)
-- SQL (`sql`)
-- C/C++ (`c`, `cpp`, `c++`)
-- Java (`java`)
-- PHP (`php`)
-- Swift (`swift`)
-- Kotlin (`kt`, `kotlin`)
-- And many more!
-
-## Adding Filenames
-
-You can add a filename to your code blocks by appending `:filename` to the language identifier:
-
-````md
-```javascript:app.js
-import express from 'express';
-const app = express();
-
-app.get('/', (req, res) => {
-  res.send('Hello World!');
-});
-
-app.listen(3000, () => {
-  console.log('Server running on port 3000');
-});
-```
-````
-
-This will render as:
-
-```javascript:app.js
-import express from 'express';
-const app = express();
-
-app.get('/', (req, res) => {
-  res.send('Hello World!');
-});
-
-app.listen(3000, () => {
-  console.log('Server running on port 3000');
-});
+```md
+![Alt text](path/to/image.png "Image title on hover")
 ```
 
-## Line Numbers
+## Image Sizing
 
-Line numbers are displayed by default. You can toggle them using the button in the top-right corner of the code block.
+You can control the size of images using HTML attributes:
 
-## Copying Code
+```md
+<img src="path/to/image.png" width="500" height="300" alt="Sized image" />
+```
 
-Each code block includes a copy button that allows users to easily copy the code to their clipboard.
+Or for more control, you can use inline styles:
 
-## Theme Support
+```md
+<img src="path/to/image.png" style="width: 50%; max-width: 500px;" alt="Styled image" />
+```
 
-Code blocks automatically adapt to the current theme (light or dark mode), ensuring optimal readability in any environment.
+## Image Alignment
+
+You can align images using HTML and CSS:
+
+### Center Alignment
+
+```md
+<div style="text-align: center;">
+  <img src="path/to/image.png" alt="Centered image" />
+</div>
+```
+
+### Right Alignment
+
+```md
+<div style="text-align: right;">
+  <img src="path/to/image.png" alt="Right-aligned image" />
+</div>
+```
+
+## Responsive Images
+
+All images in Open Docs are responsive by default using the `img-fluid` class. This ensures that images never exceed the width of their container and maintain their aspect ratio.
+
+## Theme-Specific Images
+
+You can display different images based on the user's current theme (light or dark mode). This is especially useful for diagrams or screenshots that need different versions for each theme.
+
+### Using HTML Attributes
+
+The simplest way to create theme-specific images is to use the `light-only` or `dark-only` attributes on your image tags:
+
+```html
+<!-- This image will only show in light mode -->
+<img src="/images/diagram-light.png" alt="Light mode diagram" light-only />
+
+<!-- This image will only show in dark mode -->
+<img src="/images/diagram-dark.png" alt="Dark mode diagram" dark-only />
+```
+
+### Example Implementation
+
+A common pattern is to place light and dark mode images in the same position:
+
+```html
+<div style="position: relative;">
+  <!-- Light mode image -->
+  <img src="/images/chart-light.png" alt="Data visualization" light-only />
+  
+  <!-- Dark mode image (same position) -->
+  <img src="/images/chart-dark.png" alt="Data visualization" dark-only />
+</div>
+```
+
+This technique ensures only the appropriate image for the current theme is shown, while maintaining the same layout regardless of which theme is active.
+
+### Best Practices for Theme-Specific Images
+
+- Create separate optimized versions for light and dark themes
+- Ensure both images have the same dimensions to prevent layout shifts
+- Use appropriate contrast in each theme version
+- Test how images look when the user switches themes
+- Always include alt text for accessibility
+
+## Image Captions
+
+You can add captions to images by wrapping them in a figure element:
+
+```md
+<figure>
+  <img src="path/to/image.png" alt="Image with caption" />
+  <figcaption>This is a caption for the image above</figcaption>
+</figure>
+```
+
+## Clickable Images
+
+To make an image clickable (linking to a larger version or another page), use the following syntax:
+
+```md
+[![Alt text](path/to/thumbnail.png)](path/to/full-image.png)
+```
+
+Or with HTML for more control:
+
+```md
+<a href="path/to/full-image.png" target="_blank">
+  <img src="path/to/thumbnail.png" alt="Clickable image" />
+</a>
+```
+
+## Image Galleries
+
+For multiple related images, you can create a simple gallery using a grid layout:
+
+```md
+<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem;">
+  <img src="path/to/image1.png" alt="Gallery image 1" />
+  <img src="path/to/image2.png" alt="Gallery image 2" />
+  <img src="path/to/image3.png" alt="Gallery image 3" />
+  <img src="path/to/image4.png" alt="Gallery image 4" />
+</div>
+```
 
 ## Best Practices
 
-- Always specify the language for proper syntax highlighting
-- Use meaningful filenames when showing file-specific code
-- Keep code blocks concise and focused on the essential parts
-- Consider adding comments to explain complex logic
-- For very long code blocks, consider breaking them into smaller, focused examples
+- Use appropriate file formats (PNG for screenshots/diagrams, JPG for photos, SVG for icons/logos)
+- Optimize images for web to reduce file size
+- Always include meaningful alt text for accessibility
+- Consider using SVG for diagrams when possible for better scaling
+- Use consistent sizing for similar types of images
+- Provide dark-mode alternates for diagrams with light backgrounds
 
-By following these guidelines, you can create effective and visually appealing code examples in your documentation.
+By following these guidelines, you can effectively enhance your documentation with images that improve understanding and engagement.
