@@ -69,12 +69,6 @@ const preprocessMDXContent = (mdxContent: string): string => {
       if (!srcMatch) return fullMatch; // If no src, leave as is
       
       let src = srcMatch[1];
-      // Append mode markers to src if needed
-      if (isLightOnly) {
-        src += '#light-only';
-      } else if (isDarkOnly) {
-        src += '#dark-only';
-      }
       
       let markdown = `![${altMatch?.[1] || titleMatch?.[1] || ''}](${src}`;
       
@@ -89,6 +83,8 @@ const preprocessMDXContent = (mdxContent: string): string => {
       if (heightMatch) dataAttrs.push(`height="${heightMatch[1]}"`);
       if (widthMatch) dataAttrs.push(`width="${widthMatch[1]}"`);
       if (hasNoZoom) dataAttrs.push('noZoom="true"');
+      if (isLightOnly) dataAttrs.push('data-mode="light-only"');
+      if (isDarkOnly) dataAttrs.push('data-mode="dark-only"');
       
       if (dataAttrs.length > 0) {
         markdown += `<!-- ${dataAttrs.join(' ')} -->`;
@@ -180,7 +176,7 @@ interface ImageProps extends MarkdownComponentProps {
 /**
  * Image component with zoom functionality
  */
-const ImageComponent: React.FC<ImageProps> = ({ src, alt, title, noZoom, className, height, width, ...rest }) => {
+const ImageComponent: React.FC<ImageProps> = ({ src, alt, title, noZoom, className, height, width, 'data-mode': dataMode, ...rest }) => {
   const [open, setOpen] = useState(false);
   // State to track theme changes
   const [currentTheme, setCurrentTheme] = useState(document.documentElement.getAttribute('data-theme') || 'light');
@@ -213,11 +209,14 @@ const ImageComponent: React.FC<ImageProps> = ({ src, alt, title, noZoom, classNa
   const isDarkMode = currentTheme === 'dark';
   
   // Check if this is a dark/light mode specific image
-  const isLightOnlyImage = src?.includes('#light-only') || className?.includes('light-only');
-  const isDarkOnlyImage = src?.includes('#dark-only') || className?.includes('dark-only');
+  const modeFromHash = src?.includes('#light-only') ? 'light-only' : src?.includes('#dark-only') ? 'dark-only' : null;
+  const modeFromClass = className?.includes('light-only') ? 'light-only' : className?.includes('dark-only') ? 'dark-only' : null;
+  const modeFromAttr = dataMode; // From the data-mode attribute
+  
+  const imageMode = modeFromAttr || modeFromHash || modeFromClass || null;
   
   // If this is a mode-specific image and doesn't match current mode, don't render
-  if ((isLightOnlyImage && isDarkMode) || (isDarkOnlyImage && !isDarkMode)) {
+  if ((imageMode === 'light-only' && isDarkMode) || (imageMode === 'dark-only' && !isDarkMode)) {
     return null;
   }
   
@@ -363,9 +362,42 @@ const MDXRenderer: React.FC<MDXRendererProps> = ({ content }) => {
               </code>
             );
           },
-          img: ({ src, alt, title, noZoom, className, height, width, ...rest }: ImageProps) => (
-            <ImageComponent src={src} alt={alt} title={title} noZoom={noZoom} className={className} height={height} width={width} {...rest} />
-          )
+          img: ({ src, alt, title, className, ...rest }: ImageProps) => {
+            // Extract custom attributes from HTML comments if available
+            let noZoom = false;
+            let height = undefined;
+            let width = undefined;
+            let dataMode = undefined;
+            
+            // Check for HTML comment with data attributes
+            const commentMatch = rest.node?.position?.end?.column && rest.node?.children?.[0]?.value;
+            if (commentMatch && typeof commentMatch === 'string') {
+              // Extract attributes from HTML comment
+              const heightMatch = commentMatch.match(/height="([^"]*)"/);
+              const widthMatch = commentMatch.match(/width="([^"]*)"/);
+              const noZoomMatch = commentMatch.match(/noZoom="true"/);
+              const dataModeMatch = commentMatch.match(/data-mode="([^"]*)"/);
+              
+              if (heightMatch) height = heightMatch[1];
+              if (widthMatch) width = widthMatch[1];
+              if (noZoomMatch) noZoom = true;
+              if (dataModeMatch) dataMode = dataModeMatch[1];
+            }
+            
+            return (
+              <ImageComponent 
+                src={src} 
+                alt={alt} 
+                title={title} 
+                noZoom={noZoom} 
+                className={className} 
+                height={height} 
+                width={width} 
+                data-mode={dataMode}
+                {...rest} 
+              />
+            );
+          }
         }}
       >
         {processedContent}
