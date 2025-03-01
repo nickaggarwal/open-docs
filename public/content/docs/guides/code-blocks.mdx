@@ -81,6 +81,68 @@ app.listen(3000, () => {
 });
 ```
 
+## Showcasing Rust Code
+
+Here's how Rust code looks in our new markdown-style code blocks:
+
+```rust:src/main.rs
+use std::collections::HashMap;
+
+fn main() {
+    let mut scores = HashMap::new();
+    
+    // Insert some values
+    scores.insert(String::from("Blue"), 10);
+    scores.insert(String::from("Yellow"), 50);
+    
+    // Get a value
+    let team_name = String::from("Blue");
+    let score = scores.get(&team_name).unwrap_or(&0);
+    
+    println!("Team {}: {}", team_name, score);
+    
+    // Iterate over key-value pairs
+    for (key, value) in &scores {
+        println!("{}: {}", key, value);
+    }
+}
+```
+
+## Go Examples
+
+Go code is also beautifully highlighted:
+
+```go:hello.go
+package main
+
+import (
+    "fmt"
+    "time"
+)
+
+func main() {
+    // Print welcome message
+    fmt.Println("Welcome to the Go playground!")
+    
+    // Get current time
+    currentTime := time.Now()
+    fmt.Println("The current time is:", currentTime.Format("15:04:05"))
+    
+    // Using a channel for concurrency
+    messages := make(chan string)
+    
+    // Start a goroutine
+    go func() {
+        time.Sleep(time.Second)
+        messages <- "Hello from goroutine!"
+    }()
+    
+    // Wait for message
+    msg := <-messages
+    fmt.Println(msg)
+}
+```
+
 ## Line Numbers
 
 Line numbers are displayed by default. You can toggle them using the button in the top-right corner of the code block.
@@ -101,4 +163,4 @@ Code blocks automatically adapt to the current theme (light or dark mode), ensur
 - Consider adding comments to explain complex logic
 - For very long code blocks, consider breaking them into smaller, focused examples
 
-By following these guidelines, you can create effective and visually appealing code examples in your documentation.
+By following these guidelines, you can create effective and visually appealing code examples in your documentation. 

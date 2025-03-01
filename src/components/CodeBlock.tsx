@@ -16,7 +16,7 @@ interface CodeBlockProps {
  */
 export const CodeBlock: React.FC<CodeBlockProps> = ({ language, children, filename }) => {
   const [copied, setCopied] = useState(false);
-  const [showLineNumbers, setShowLineNumbers] = useState(true);
+  const [showLineNumbers, setShowLineNumbers] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(
     document.documentElement.getAttribute('data-theme') === 'dark'
   );
@@ -127,14 +127,15 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({ language, children, filena
     <div className="markdown-code-block position-relative my-4">
       {/* Filename display (if provided) */}
       {filename && (
-        <div className={`code-filename px-3 py-1 small ${isDarkMode ? 'text-light bg-dark' : 'text-dark bg-light'}`}
+        <div className={`code-filename px-3 py-1 small ${isDarkMode ? 'text-light bg-dark' : 'text-dark bg-dark'}`}
              style={{ 
                borderTopLeftRadius: '6px', 
                borderTopRightRadius: '6px',
                borderBottom: 'none',
-               border: `1px solid ${isDarkMode ? '#444' : '#e1e4e8'}`,
+               border: `1px solid ${isDarkMode ? '#444' : '#444'}`,
                borderBottomColor: 'transparent',
                fontFamily: 'ui-monospace, SFMono-Regular, SF Mono, Menlo, Monaco, Consolas, monospace',
+               color: isDarkMode ? 'rgba(255,255,255,0.8)' : 'rgba(255,255,255,0.8)',
              }}>
           {filename}
         </div>
@@ -144,22 +145,22 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({ language, children, filena
       <div className="code-block-wrapper position-relative">
         <SyntaxHighlighter
           language={language}
-          style={isDarkMode ? vscDarkPlus : vs}
+          style={vscDarkPlus}
           showLineNumbers={showLineNumbers}
           wrapLines={true}
           customStyle={{
             margin: 0,
             borderRadius: filename ? '0 6px 6px 6px' : '6px',
             fontSize: '0.9rem',
-            border: `1px solid ${isDarkMode ? '#444' : '#e1e4e8'}`,
+            border: `1px solid #444`,
           }}
           lineNumberStyle={{
             minWidth: '3em',
             paddingRight: '1em',
-            color: isDarkMode ? '#6e7681' : '#bbb',
+            color: '#6e7681',
             textAlign: 'right',
             userSelect: 'none',
-            borderRight: `1px solid ${isDarkMode ? '#2e2e2e' : '#f0f0f0'}`,
+            borderRight: `1px solid #2e2e2e`,
             paddingLeft: '0.5em',
             fontSize: '0.8em',
           }}
@@ -181,7 +182,7 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({ language, children, filena
             zIndex: 10, 
             opacity: 0, 
             transition: 'opacity 0.2s ease',
-            backgroundColor: isDarkMode ? 'rgba(30, 30, 30, 0.7)' : 'rgba(255, 255, 255, 0.7)',
+            backgroundColor: 'rgba(30, 30, 30, 0.7)',
             borderRadius: '4px',
             padding: '2px 4px',
             backdropFilter: 'blur(2px)'
@@ -192,7 +193,7 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({ language, children, filena
           {/* Language badge */}
           {!filename && (
             <span 
-              className={`badge me-1 ${isDarkMode ? 'bg-secondary text-light' : 'bg-light text-secondary'}`}
+              className="badge me-1 bg-secondary text-light"
               style={{ 
                 fontSize: '0.7rem',
                 fontWeight: 'normal',
@@ -212,7 +213,7 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({ language, children, filena
             aria-label={`${showLineNumbers ? 'Hide' : 'Show'} line numbers`}
             style={{ 
               fontSize: '0.8rem', 
-              color: isDarkMode ? 'rgba(255,255,255,0.7)' : 'rgba(0,0,0,0.7)',
+              color: 'rgba(255,255,255,0.7)',
               minWidth: 'unset'
             }}
           >
@@ -229,7 +230,7 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({ language, children, filena
               fontSize: '0.8rem', 
               color: copied 
                 ? '#28a745' 
-                : isDarkMode ? 'rgba(255,255,255,0.7)' : 'rgba(0,0,0,0.7)',
+                : 'rgba(255,255,255,0.7)',
               minWidth: 'unset'
             }}
           >
