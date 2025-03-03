@@ -1,99 +1,151 @@
 ---
 title: 'Image Embeds'
-description: 'Learn how to embed and customize images in your documentation'
+description: 'Learn how to add and customize images in your Open Docs documentation'
 ---
 
 # Image Embeds
 
-This guide explains how to embed and customize images in your Open Docs documentation.
+Images are a powerful way to enhance your documentation with visual information. Open Docs provides several ways to embed and customize images.
 
-## Basic Images
+## Basic Image Embedding
 
-The simplest way to add an image is to use Markdown syntax:
+To add an image to your documentation, use the standard Markdown syntax:
 
-```markdown
-![Alt text](/path/to/image.jpg)
+```md
+![Alt text](path/to/image.png)
 ```
 
-This renders a responsive image that will adjust to the width of the container.
+You can also add a title to provide additional information when users hover over the image:
 
-## Customizing Images
-
-### Setting Dimensions
-
-You can set custom dimensions for your images using HTML comments after markdown images:
-
-```markdown
-![Description of image](/path/to/image.jpg)<!-- height="200" -->
+```md
+![Alt text](path/to/image.png "Image title on hover")
 ```
 
-This will render the image with a height of 200 pixels while maintaining the aspect ratio.
+## Image Sizing
 
-To set both height and width:
+You can control the size of images using HTML attributes:
 
-```markdown
-![Description of image](/path/to/image.jpg)<!-- height="200" width="300" -->
+```md
+<img src="path/to/image.png" width="500" height="300" alt="Sized image" />
 ```
 
-### Disabling Zoom
+Or for more control, you can use inline styles:
 
-By default, images are zoomable when clicked. To disable this behavior, add the `noZoom` attribute:
-
-```markdown
-![Description of image](/path/to/image.jpg)<!-- height="200" noZoom="true" -->
+```md
+<img src="path/to/image.png" style="width: 50%; max-width: 500px;" alt="Styled image" />
 ```
 
-### Linking Images
+## Image Alignment
 
-You can make images clickable by using this syntax:
+You can align images using HTML and CSS:
 
-```markdown
-[![Image description](/path/to/image.jpg)](https://example.com)
+### Center Alignment
+
+```md
+<div style="text-align: center;">
+  <img src="path/to/image.png" alt="Centered image" />
+</div>
 ```
 
-To add attributes to a linked image:
+### Right Alignment
 
-```markdown
-[![Image description](/path/to/image.jpg)<!-- height="200" -->](https://example.com)
+```md
+<div style="text-align: right;">
+  <img src="path/to/image.png" alt="Right-aligned image" />
+</div>
 ```
 
-## Dark Mode Support
+## Responsive Images
 
-### Mode-Specific Images
+All images in Open Docs are responsive by default using the `img-fluid` class. This ensures that images never exceed the width of their container and maintain their aspect ratio.
 
-You can display different images in light and dark modes using special attributes:
+## Theme-Specific Images
 
-```markdown
-![Light mode only](/path/to/light-image.jpg)<!-- light-only -->
-![Dark mode only](/path/to/dark-image.jpg)<!-- dark-only -->
+You can display different images based on the user's current theme (light or dark mode). This is especially useful for diagrams or screenshots that need different versions for each theme.
+
+### Using HTML Attributes
+
+The simplest way to create theme-specific images is to use the `light-only` or `dark-only` attributes on your image tags:
+
+```html
+<!-- This image will only show in light mode -->
+<img src="/images/diagram-light.png" alt="Light mode diagram" light-only />
+
+<!-- This image will only show in dark mode -->
+<img src="/images/diagram-dark.png" alt="Dark mode diagram" dark-only />
 ```
 
-Only one image will be visible at a time, depending on the current theme.
+### Example Implementation
 
-## Examples
+A common pattern is to place light and dark mode images in the same position:
 
-### Basic Image
-![Open Docs Logo](/logo.png)
+```html
+<div style="position: relative;">
+  <!-- Light mode image -->
+  <img src="/images/chart-light.png" alt="Data visualization" light-only />
+  
+  <!-- Dark mode image (same position) -->
+  <img src="/images/chart-dark.png" alt="Data visualization" dark-only />
+</div>
+```
 
-### Cat Image Example
-![A cute cat](/images/cat.jpg)
+This technique ensures only the appropriate image for the current theme is shown, while maintaining the same layout regardless of which theme is active.
 
-### Image with Custom Height
-![Open Docs Logo with custom height](/logo.png)<!-- height="100" -->
+### Best Practices for Theme-Specific Images
 
-### Image without Zoom
-![Non-zoomable Open Docs Logo](/logo.png)<!-- height="100" noZoom="true" -->
+- Create separate optimized versions for light and dark themes
+- Ensure both images have the same dimensions to prevent layout shifts
+- Use appropriate contrast in each theme version
+- Test how images look when the user switches themes
+- Always include alt text for accessibility
 
-### Linked Image
-[![Clickable Open Docs Logo](/logo.png)](https://github.com)
+## Image Captions
 
-### Dark/Light Mode Specific Images
-![Beautiful sunset - visible in light mode only](/images/landscape-light.jpg)<!-- light-only width="400" -->
-![Night sky with moon - visible in dark mode only](/images/landscape-dark.jpg)<!-- dark-only width="400" -->
+You can add captions to images by wrapping them in a figure element:
 
-## Tips
+```md
+<figure>
+  <img src="path/to/image.png" alt="Image with caption" />
+  <figcaption>This is a caption for the image above</figcaption>
+</figure>
+```
 
-- Use SVG images when possible for better scaling
-- Optimize your images for web to reduce page load times
-- Always include descriptive alt text for accessibility
-- Consider how your images will appear on both desktop and mobile devices 
+## Clickable Images
+
+To make an image clickable (linking to a larger version or another page), use the following syntax:
+
+```md
+[![Alt text](path/to/thumbnail.png)](path/to/full-image.png)
+```
+
+Or with HTML for more control:
+
+```md
+<a href="path/to/full-image.png" target="_blank">
+  <img src="path/to/thumbnail.png" alt="Clickable image" />
+</a>
+```
+
+## Image Galleries
+
+For multiple related images, you can create a simple gallery using a grid layout:
+
+```md
+<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem;">
+  <img src="path/to/image1.png" alt="Gallery image 1" />
+  <img src="path/to/image2.png" alt="Gallery image 2" />
+  <img src="path/to/image3.png" alt="Gallery image 3" />
+  <img src="path/to/image4.png" alt="Gallery image 4" />
+</div>
+```
+
+## Best Practices
+
+- Use appropriate file formats (PNG for screenshots/diagrams, JPG for photos, SVG for icons/logos)
+- Optimize images for web to reduce file size
+- Always include meaningful alt text for accessibility
+- Consider using SVG for diagrams when possible for better scaling
+- Use consistent sizing for similar types of images
+- Provide dark-mode alternates for diagrams with light backgrounds
+
+By following these guidelines, you can effectively enhance your documentation with images that improve understanding and engagement.

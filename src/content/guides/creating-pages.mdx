@@ -1,0 +1,40 @@
+## Add your first document
+
+Create a new file in the `content` directory:
+
+```bash
+mkdir -p content/guides
+touch content/guides/my-first-guide.mdx
+```
+
+Add some content to your new file:
+
+```mdx
+# My First Guide
+
+This is my first guide created with Open Docs.
+
+## Features
+
+- **Easy to use**: Simple and intuitive API
+- **Customizable**: Fully customizable themes
+- **Fast**: Built with performance in mind
+```
+
+## Configure navigation
+
+Update your `site.config.json` file to include your new guide:
+
+```json
+{
+  "navigation": [
+    // ... existing navigation
+    {
+      "group": "Guides",
+      "pages": [
+        "guides/my-first-guide"
+      ]
+    }
+  ]
+}
+```
