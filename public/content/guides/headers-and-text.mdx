@@ -1,0 +1,235 @@
+---
+title: Headers and Text Formatting
+description: Learn how to format text and use headers effectively in your Open Docs documentation
+lastUpdated: March 10, 2024
+category: Guides
+---
+
+# Headers and Text Formatting
+
+This guide covers how to effectively use headers and format text in your Open Docs documentation for maximum readability and engagement.
+
+## Headers
+
+Headers help structure your content and create a clear hierarchy. Open Docs supports 6 levels of headers:
+
+```md
+# H1 - Main title of the page
+## H2 - Major sections
+### H3 - Subsections
+#### H4 - Smaller subsections
+##### H5 - Minor points
+###### H6 - Fine details
+```
+
+### Best Practices for Headers
+
+- Use only one H1 (`#`) per page
+- Maintain a logical hierarchy (don't skip levels)
+- Keep headers concise and descriptive
+- Use sentence case (capitalize only the first word)
+
+## Text Formatting
+
+### Bold, Italic, and Strikethrough
+
+Open Docs supports common text formatting options:
+
+```md
+**Bold text** is used for emphasis
+*Italic text* is used for slight emphasis or introducing terms
+~~Strikethrough~~ is used to show removed or deprecated content
+```
+
+Which renders as:
+
+**Bold text** is used for emphasis  
+*Italic text* is used for slight emphasis or introducing terms  
+~~Strikethrough~~ is used to show removed or deprecated content
+
+### Combining Formatting
+
+You can combine different text formatting styles:
+
+```md
+***Bold and italic***
+**Bold with *italic* inside**
+```
+
+Which renders as:
+
+***Bold and italic***  
+**Bold with *italic* inside**
+
+## Links
+
+### Internal Links
+
+Link to other pages in your documentation using relative paths:
+
+```md
+[Installation Guide](/getting-started/installation)
+[Learn about configuration](/getting-started/configuration)
+```
+
+### External Links
+
+Link to external resources by providing the full URL:
+
+```md
+[Open Docs GitHub Repository](https://github.com/yourusername/open-docs)
+[Learn about MDX](https://mdxjs.com/)
+```
+
+### Section Links
+
+Link to specific sections within a page using anchor links:
+
+```md
+[Jump to Text Formatting](#text-formatting)
+```
+
+## Blockquotes
+
+Blockquotes are useful for highlighting important information, quotes, or callouts:
+
+```md
+> This is a blockquote. It's great for emphasizing important information.
+```
+
+Which renders as:
+
+> This is a blockquote. It's great for emphasizing important information.
+
+### Multi-line Blockquotes
+
+```md
+> This is a multi-line blockquote.
+>
+> It can contain multiple paragraphs, lists, and other markdown elements.
+>
+> - Item one
+> - Item two
+```
+
+Which renders as:
+
+> This is a multi-line blockquote.
+>
+> It can contain multiple paragraphs, lists, and other markdown elements.
+>
+> - Item one
+> - Item two
+
+## Callouts and Admonitions
+
+Open Docs supports special callout blocks for different types of information:
+
+```md
+<Note>
+  This is a note with useful information.
+</Note>
+
+<Warning>
+  This is a warning that requires attention.
+</Warning>
+
+<Tip>
+  This is a helpful tip to improve your workflow.
+</Tip>
+
+<Info>
+  This provides additional context or background information.
+</Info>
+
+<Caution>
+  This highlights potential issues or pitfalls.
+</Caution>
+```
+
+## Line Breaks
+
+To create a line break without starting a new paragraph, end a line with two spaces:
+
+```md
+This is the first line.  
+This is the second line.
+```
+
+To create a new paragraph, leave an empty line between text blocks:
+
+```md
+This is the first paragraph.
+
+This is the second paragraph.
+```
+
+## Code Inline
+
+For inline code references, use backticks:
+
+```md
+Use the `<Navigation />` component to add a sidebar.
+```
+
+Which renders as:
+
+Use the `<Navigation />` component to add a sidebar.
+
+## Lists
+
+### Unordered Lists
+
+```md
+- First item
+- Second item
+- Third item
+  - Nested item 1
+  - Nested item 2
+```
+
+Which renders as:
+
+- First item
+- Second item
+- Third item
+  - Nested item 1
+  - Nested item 2
+
+### Ordered Lists
+
+```md
+1. First step
+2. Second step
+3. Third step
+   1. Nested step 1
+   2. Nested step 2
+```
+
+Which renders as:
+
+1. First step
+2. Second step
+3. Third step
+   1. Nested step 1
+   2. Nested step 2
+
+## Horizontal Rules
+
+Use three hyphens to create a horizontal divider:
+
+```md
+---
+```
+
+Which creates a line like this:
+
+---
+
+## Tips for Effective Text Usage
+
+1. **Be concise**: Keep paragraphs and sentences short and focused
+2. **Use active voice**: It makes your content more engaging and direct
+3. **Balance formatting**: Don't overuse bold, italic, or other formatting
+4. **Maintain consistency**: Use the same style for similar elements throughout your docs
+5. **Consider readability**: Break up large text blocks with headers, lists, and images 

@@ -112,6 +112,13 @@ interface DocPageParams {
   segment3?: string;
 }
 
+interface MDXMetadata {
+  title: string;
+  description: string;
+  lastUpdated: string;
+  category: string;
+}
+
 const DocPage: React.FC = () => {
   const params = useParams<DocPageParams>();
   const location = useLocation();
@@ -176,8 +183,8 @@ const DocPage: React.FC = () => {
     fetchContent();
   }, [id, isApiSection, section, location.pathname, params]);
 
-  // Generate breadcrumbs based on the current path
-  const generateBreadcrumbs = () => {
+  // Generate breadcrumbs based on the current path and metadata
+  const generateBreadcrumbs = (pageTitle?: string) => {
     if (!id) return [];
 
     const parts = id.split('/');
@@ -199,9 +206,9 @@ const DocPage: React.FC = () => {
       });
     }
 
-    // Add the current page (last part)
+    // Add the current page (last part) - use provided title if available
     breadcrumbs.push({
-      label: parts[parts.length - 1].charAt(0).toUpperCase() + parts[parts.length - 1].slice(1).replace(/-/g, ' '),
+      label: pageTitle || parts[parts.length - 1].charAt(0).toUpperCase() + parts[parts.length - 1].slice(1).replace(/-/g, ' '),
       path: `/${section}/${id}`,
       current: true,
     });
@@ -225,37 +232,110 @@ const DocPage: React.FC = () => {
     return `${githubRepo}/edit/main/src/content/${id}.mdx`;
   };
 
-  const breadcrumbs = generateBreadcrumbs();
-  
   // Get the title from the ID
   const getTitle = () => {
     const parts = id.split('/');
     return parts[parts.length - 1].charAt(0).toUpperCase() + parts[parts.length - 1].slice(1).replace(/-/g, ' ');
   };
 
-  // Parse the content to extract title and body
+  // Parse the content to extract title, body and metadata
   const parseContent = (content: string) => {
     const lines = content.split('\n');
     let title = getTitle();
     let body = content;
+    let metadata: MDXMetadata | null = null;
+    let description: string | undefined = undefined;
 
-    // If the first line is a heading, use it as the title
-    if (lines[0].startsWith('# ')) {
-      title = lines[0].substring(2);
+    // Extract frontmatter if it exists
+    const frontmatterMatch = content.match(/^---\n([\s\S]*?)\n---\n([\s\S]*)$/);
+    if (frontmatterMatch) {
+      const [, frontmatter, contentBody] = frontmatterMatch;
+      body = contentBody;
+
+      // Parse frontmatter
+      const titleMatch = frontmatter.match(/title:\s*(.+)$/m);
+      const descriptionMatch = frontmatter.match(/description:\s*(.+)$/m);
+      const lastUpdatedMatch = frontmatter.match(/lastUpdated:\s*(.+)$/m);
+      const categoryMatch = frontmatter.match(/category:\s*(.+)$/m);
+
+      // Get description from frontmatter if it exists
+      if (descriptionMatch) {
+        description = descriptionMatch[1].trim();
+      }
+      
+      // Get title from frontmatter
+      if (titleMatch) {
+        title = titleMatch[1].trim();
+      }
+
+      if (titleMatch || lastUpdatedMatch || categoryMatch || description) {
+        metadata = {
+          title,
+          description: description || '',
+          lastUpdated: lastUpdatedMatch ? lastUpdatedMatch[1].trim() : formatDate(),
+          category: categoryMatch ? categoryMatch[1].trim() : (section === 'api' ? 'API' : 'Documentation')
+        };
+      }
+    } else if (lines[0].startsWith('# ')) {
+      // If no frontmatter but has title heading
+      title = lines[0].substring(2).trim();
       body = lines.slice(1).join('\n').trim();
     }
 
-    return { title, body };
+    // Only update metadata if we have a description from frontmatter
+    if (description && metadata) {
+      metadata.description = description;
+    } else if (description) {
+      metadata = {
+        title,
+        description,
+        lastUpdated: formatDate(),
+        category: section === 'api' ? 'API' : 'Documentation'
+      };
+    }
+
+    return { title, body, metadata };
   };
 
   // Render the content
   const renderContent = () => {
     if (!content) return null;
 
-    const { title, body } = parseContent(content);
+    const { title, body, metadata } = parseContent(content);
+    const currentBreadcrumbs = generateBreadcrumbs(title);
 
     return (
       <Box>
+        {/* Breadcrumbs */}
+        <Breadcrumbs
+          separator={<NavigateNextIcon fontSize="small" />}
+          aria-label="breadcrumb"
+          sx={{ mb: 3 }}
+        >
+          {currentBreadcrumbs.map((crumb, index) => (
+            <Box key={index}>
+              {crumb.current ? (
+                <Typography color="text.primary" fontWeight={500}>
+                  {crumb.label}
+                </Typography>
+              ) : (
+                <Link
+                  component={RouterLink}
+                  to={crumb.path}
+                  color="inherit"
+                  sx={{
+                    '&:hover': {
+                      textDecoration: 'underline',
+                    },
+                  }}
+                >
+                  {crumb.label}
+                </Link>
+              )}
+            </Box>
+          ))}
+        </Breadcrumbs>
+
         {/* Title and metadata */}
         <Box sx={{ mb: 4 }}>
           <Typography variant="h3" component="h1" gutterBottom sx={{ fontWeight: 700 }}>
@@ -264,7 +344,7 @@ const DocPage: React.FC = () => {
 
           <Box sx={{ display: 'flex', alignItems: 'center', flexWrap: 'wrap', gap: 2, mb: 2 }}>
             <Chip
-              label={`Last updated: ${formatDate()}`}
+              label={`Last updated: ${metadata?.lastUpdated || formatDate()}`}
               size="small"
               sx={{
                 backgroundColor: 'rgba(0, 0, 0, 0.06)',
@@ -274,12 +354,26 @@ const DocPage: React.FC = () => {
             />
 
             <Chip
-              label={section === 'api' ? 'API' : 'Documentation'}
+              label={metadata?.category || (section === 'api' ? 'API' : 'Documentation')}
               size="small"
               color="primary"
               sx={{ fontWeight: 500 }}
             />
           </Box>
+
+          {metadata?.description && metadata.description.length > 0 && (
+            <Typography 
+              variant="subtitle1" 
+              color="text.secondary" 
+              sx={{ 
+                mb: 2,
+                lineHeight: 1.6,
+                maxWidth: '800px'
+              }}
+            >
+              {metadata.description}
+            </Typography>
+          )}
 
           <Divider sx={{ my: 2 }} />
         </Box>
@@ -310,36 +404,6 @@ const DocPage: React.FC = () => {
 
   return (
     <Box sx={{ width: '100%' }}>
-      {/* Breadcrumbs */}
-      <Breadcrumbs
-        separator={<NavigateNextIcon fontSize="small" />}
-        aria-label="breadcrumb"
-        sx={{ mb: 3 }}
-      >
-        {breadcrumbs.map((crumb, index) => (
-          <Box key={index}>
-            {crumb.current ? (
-              <Typography color="text.primary" fontWeight={500}>
-                {crumb.label}
-              </Typography>
-            ) : (
-              <Link
-                component={RouterLink}
-                to={crumb.path}
-                color="inherit"
-                sx={{
-                  '&:hover': {
-                    textDecoration: 'underline',
-                  },
-                }}
-              >
-                {crumb.label}
-              </Link>
-            )}
-          </Box>
-        ))}
-      </Breadcrumbs>
-
       {/* Loading state */}
       {loading && (
         <Box sx={{ display: 'flex', justifyContent: 'center', my: 8 }}>
