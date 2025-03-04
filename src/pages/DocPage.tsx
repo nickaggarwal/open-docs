@@ -14,7 +14,7 @@ import {
 import EditIcon from '@mui/icons-material/Edit';
 import NavigateNextIcon from '@mui/icons-material/NavigateNext';
 import MDXRenderer from '../components/MDXRenderer';
-import { siteConfig } from '../config';
+import { siteConfig } from '../components';
 
 // In a real application, you would use a dynamic import mechanism
 // For this example, we're simulating content loading

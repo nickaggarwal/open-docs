@@ -1,6 +1,6 @@
 import { createTheme } from '@mui/material/styles';
 import { PaletteMode } from '@mui/material';
-import { siteConfig } from '../config';
+import { siteConfig } from '../components';
 
 // Create a theme instance
 const getTheme = (mode: PaletteMode) => {

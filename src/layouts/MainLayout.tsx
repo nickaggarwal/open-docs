@@ -2,7 +2,7 @@ import React, { useState, useEffect, ReactNode } from 'react';
 import { useLocation, Link as RouterLink } from 'react-router-dom';
 import { Container, Navbar, Nav, Button, Offcanvas } from 'react-bootstrap';
 import NavigationSidebar from '../components/Sidebar';
-import { navigationConfig, siteConfig } from '../config';
+import { navigationConfig, siteConfig } from '../components';
 
 // Define the drawer width
 const DRAWER_WIDTH = 280;

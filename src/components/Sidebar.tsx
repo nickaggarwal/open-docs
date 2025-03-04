@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { Form, ListGroup, Accordion, InputGroup, Collapse } from 'react-bootstrap';
-import { siteConfig } from '../config';
+import { siteConfig } from '.';
 
 interface NavigationItem {
   type: 'category' | 'doc' | 'link' | 'section';

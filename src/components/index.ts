@@ -1,4 +1,4 @@
-import siteConfig from './site.config.json';
+import siteConfig from '../config/site.config.json';
 
 export interface PageLink {
   id: string;

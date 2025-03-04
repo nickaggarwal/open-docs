@@ -3,7 +3,7 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import MainLayout from './layouts/MainLayout';
 import HomePage from './pages/HomePage';
 import DocPage from './pages/DocPage';
-import { siteConfig, navigationConfig } from './config';
+import { siteConfig, navigationConfig } from './components';
 
 /**
  * Main Application Component

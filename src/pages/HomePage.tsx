@@ -17,7 +17,7 @@ import ArrowForwardIcon from '@mui/icons-material/ArrowForward';
 import CodeIcon from '@mui/icons-material/Code';
 import BookIcon from '@mui/icons-material/Book';
 import SettingsIcon from '@mui/icons-material/Settings';
-import { siteConfig, navigationConfig } from '../config';
+import { siteConfig, navigationConfig } from '../components';
 
 const HomePage: React.FC = () => {
   const theme = useTheme();
