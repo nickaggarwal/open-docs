@@ -49,8 +49,12 @@
     {
       "group": "Getting Started",
       "pages": [
-        "getting-started/installation",
-        "getting-started/configuration"
+        "getting-started/quickstart",
+        "getting-started/sidebar-navigation ",
+        "getting-started/content-folder",
+        "getting-started/groups-tabs",
+        "getting-started/customization",
+        "getting-started/search-bar"
       ]
     },
     {

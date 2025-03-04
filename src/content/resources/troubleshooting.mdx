@@ -1,0 +1,89 @@
+
+
+Troubleshooting
+
+## Prerequisites
+
+Before you begin, make sure you have the following installed:
+
+- Node.js 14 or higher
+- npm or yarn
+
+## Installation
+
+The quickest way to get started is to use our CLI tool:
+
+```bash
+npm install -g open-docs-cli
+open-docs create my-documentation
+cd my-documentation
+```
+
+## Start the development server
+
+Once installed, you can start the development server:
+
+```bash
+npm run dev
+```
+
+This will start the development server at [http://localhost:3000](http://localhost:3000).
+
+## Add your first document
+
+Create a new file in the `content` directory:
+
+```bash
+mkdir -p content/guides
+touch content/guides/my-first-guide.mdx
+```
+
+Add some content to your new file:
+
+```mdx
+# My First Guide
+
+This is my first guide created with Open Docs.
+
+## Features
+
+- **Easy to use**: Simple and intuitive API
+- **Customizable**: Fully customizable themes
+- **Fast**: Built with performance in mind
+```
+
+## Configure navigation
+
+Update your `site.config.json` file to include your new guide:
+
+```json
+{
+  "navigation": [
+    // ... existing navigation
+    {
+      "group": "Guides",
+      "pages": [
+        "guides/my-first-guide"
+      ]
+    }
+  ]
+}
+```
+
+## Deploy
+
+When you're ready to deploy, build your documentation site:
+
+```bash
+npm run build
+```
+
+This will create a `build` directory with your static site ready to be deployed to any static hosting service like Netlify, Vercel, or GitHub Pages.
+
+## Next steps
+
+Now that you have your documentation site up and running, check out the following guides:
+
+- [Configuration](/docs/getting-started/configuration) - Learn how to configure your documentation site
+- [Styling](/docs/guides/styling) - Customize the look and feel of your documentation
+- [Deployment](/docs/guides/deployment) - Deploy your documentation to production 
