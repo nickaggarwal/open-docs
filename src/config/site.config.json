@@ -51,10 +51,9 @@
       "pages": [
         "getting-started/quickstart",
         "getting-started/sidebar-navigation ",
-        "getting-started/content-folder",
         "getting-started/groups-tabs",
-        "getting-started/customization",
-        "getting-started/search-bar"
+        "getting-started/content-folder",
+        "getting-started/customization"
       ]
     },
     {
