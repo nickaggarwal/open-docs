@@ -40,7 +40,7 @@
   --text-secondary-color: #9ca3af;
   --border-color: #1e1e1e;
   --hover-color: rgba(255, 255, 255, 0.04);
-  --active-color: rgba(76, 175, 80, 0.08);
+  --active-color: rgba(76, 175, 80, 0.15);
 }
 
 /* Sidebar Styles - Mintlify Inspired */
@@ -78,8 +78,29 @@
 }
 
 .active-nav-item {
-  color: var(--primary-color);
+  color: var(--primary-color) !important;
   background-color: var(--active-color);
+}
+
+/* Dark mode specific styles for sidebar */
+[data-theme='dark'] .sidebar-nav {
+  color: #E5E7EB;
+}
+
+[data-theme='dark'] .nav-item a {
+  color: #E5E7EB !important;
+}
+
+[data-theme='dark'] .text-secondary {
+  color: #9CA3AF !important;
+}
+
+[data-theme='dark'] .nav-item:not(.active-nav-item):hover {
+  background-color: rgba(255, 255, 255, 0.06);
+}
+
+[data-theme='dark'] .active-nav-item {
+  background-color: rgba(76, 175, 80, 0.15);
 }
 
 /* Additional Mintlify-style sidebar spacing */
