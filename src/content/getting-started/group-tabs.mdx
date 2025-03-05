@@ -1,0 +1,182 @@
+---
+title: Groups
+description: Learn more about groups for Tab Specific Groups and Nested Groups
+lastUpdated: 2024-03-20
+category: Getting Started
+---
+
+## Nested Group
+
+Key points about nested groups:
+
+1. **Structure**
+   - Nested groups are defined as objects within the `pages` array
+   - Each nested group has its own `group` name and `pages` array
+   - You can nest groups up to two levels deep (recommended maximum for good UX)
+
+2. **File Organization**
+   - Files should be organized in corresponding nested folders
+   - Example path: `src/content/core-concepts/components/buttons.mdx`
+
+3. **URL Structure**
+   - URLs will reflect the nested structure
+   - Example: `/docs/core-concepts/components/buttons`
+
+4. **Best Practices**
+   - Use nested groups sparingly to maintain clear navigation
+   - Keep the hierarchy shallow (maximum 2-3 levels)
+   - Group related content logically
+   - Use clear, descriptive names for groups
+
+### Complete Example with Nested Groups
+
+```json
+{
+  "primaryTab": {
+    "name": "Documentation"
+  },
+  "tabs": [
+    {
+      "name": "API Reference",
+      "url": "api"
+    }
+  ],
+  "navigation": [
+    {
+      "group": "",
+      "pages": ["introduction/introduction"]
+    },
+    {
+      "group": "Getting Started",
+      "pages": [
+        "getting-started/quickstart",
+        {
+          "group": "Configuration",
+          "pages": [
+            "getting-started/config/basic-setup",
+            "getting-started/config/advanced-options"
+          ]
+        },
+        {
+          "group": "Customization",
+          "pages": [
+            "getting-started/customization/themes",
+            "getting-started/customization/layouts"
+          ]
+        }
+      ]
+    }
+  ]
+}
+```
+
+
+## Tab-Specific Groups
+
+
+1. **Tab Definition**
+   - First, define your tabs in the `tabs` array
+   - Each tab needs a `name` and `url`
+   ```json
+   {
+     "tabs": [
+       {
+         "name": "API Reference",
+         "url": "api"
+       }
+     ]
+   }
+   ```
+
+2. **Group Association**
+   - Groups are associated with tabs by matching the group name with the tab name
+   - For example, groups with "API Reference" will appear in the API tab
+   ```json
+   {
+     "group": "API Reference",
+     "pages": [
+       "api/introduction",
+       "api/authentication"
+     ]
+   }
+   ```
+
+3. **URL Structure**
+   - URLs should match the tab's url prefix
+   - Example: For API tab (`url: "api"`), use paths like:
+     - `api/introduction`
+     - `api/endpoints/users`
+
+### Example: Complete Tab-Specific Structure
+
+```json
+{
+  "primaryTab": {
+    "name": "Documentation"
+  },
+  "tabs": [
+    {
+      "name": "API Reference",
+      "url": "api"
+    },
+    {
+      "name": "Advanced",
+      "url": "advanced"
+    }
+  ],
+  "navigation": [
+    // Documentation (Primary Tab)
+    {
+      "group": "",
+      "pages": ["introduction/introduction"]
+    },
+    {
+      "group": "Getting Started",
+      "pages": [
+        "getting-started/quickstart",
+        "getting-started/configuration"
+      ]
+    },
+    // API Reference Tab
+    {
+      "group": "API Reference",
+      "pages": [
+        "api/overview",
+        {
+          "group": "REST API",
+          "pages": [
+            "api/rest/authentication",
+            "api/rest/endpoints",
+            "api/rest/responses"
+          ]
+        },
+        {
+          "group": "GraphQL API",
+          "pages": [
+            "api/graphql/queries",
+            "api/graphql/mutations",
+            "api/graphql/subscriptions"
+          ]
+        }
+      ]
+    },
+    // Advanced Tab
+    {
+      "group": "Advanced",
+      "pages": [
+        "advanced/introduction",
+        {
+          "group": "Deployment",
+          "favicon": "rocket",
+          "pages": [
+            "advanced/deployment/docker",
+            "advanced/deployment/kubernetes",
+            "advanced/deployment/serverless"
+          ]
+        }
+      ]
+    }
+  ]
+}
+```
+

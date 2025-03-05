@@ -1,195 +1,187 @@
 ---
-title: Configuration of Site
-lastUpdated: March 11, 2024
-category: Guides
+title: Navigation / Sidebar
+description: Learn how to configure your documentation site's navigation, tabs, and structure using site.config.json
+lastUpdated: 2024-03-20
+category: Getting Started
 ---
 
+# Site Configuration
 
-This guide explains how to configure your Open Docs site to match your project's needs, with a focus on navigation and content organization.
+The `site.config.json` file is the central configuration file for your documentation site. It controls the navigation structure, tabs, and overall organization of your content.
 
-## Understanding site.config.json
+## Primary Tab
 
-The `site.config.json` file is the central configuration file for your Open Docs site. It controls everything from basic site information to the complete navigation structure.
-
-### Basic Site Configuration
+The primary tab is the main documentation section of your site. Configure it in the `primaryTab` section:
 
 ```json
 {
-  "name": "Open Docs",
-  "logo": "/logo.svg",
-  "favicon": "/favicon.svg",
-  
-  "colors": {
-    "primary": "#2E8555",
-    "light": "#4CAF50",
-    "dark": "#1B5E20"
-  },
-  
-  "topbarCtaButton": {
-    "name": "Get Started",
-    "url": "https://github.com/yourusername/open-docs"
+  "primaryTab": {
+    "name": "Documentation"
   }
 }
 ```
 
-These settings control your site's basic appearance and branding.
+## Additional Tabs
 
-## Content Folder Organization
-
-Your content should be organized in a folder structure that matches your navigation configuration:
-
-```
-content/
-├── docs/
-│   ├── introduction/
-│   │   └── introduction.mdx
-│   ├── getting-started/
-│   │   ├── installation.mdx
-│   │   ├── configuration.mdx  <-- This file!
-│   │   └── quickstart.mdx
-│   ├── advanced/
-│   │   ├── plugins.mdx
-│   │   ├── theming.mdx
-│   │   └── ...
-│   └── ...
-├── api/
-│   └── ...
-└── changelog/
-    └── ...
-```
-
-Each `.mdx` file represents a page in your documentation. The path to these files relative to the content directory is used in the navigation configuration.
-
-## Configuring Navigation
-
-The `navigation` array in `site.config.json` defines your sidebar structure:
+You can add additional tabs to organize different sections of your documentation. Configure them in the `tabs` array:
 
 ```json
-"navigation": [
-  {
-    "group": "",
-    "pages": ["introduction/introduction"]
-  },
-  {
-    "group": "Getting Started",
-    "pages": [
-      "getting-started/installation",
-      "getting-started/configuration",
-      "getting-started/quickstart",
-      "getting-started/troubleshooting"
-    ]
-  }
-]
+{
+  "tabs": [
+    {
+      "name": "Advanced",
+      "url": "advanced"
+    },
+    {
+      "name": "API Reference",
+      "url": "api"
+    },
+    {
+      "name": "Changelog",
+      "url": "changelog"
+    }
+  ]
+}
+```
+
+Each tab requires:
+- `name`: The display name of the tab
+- `url`: The URL path for the tab (will be used in the route)
+
+## Sidebar Structure
+
+The `navigation` array defines the sidebar structure and content organization. Here's how to configure it:
+
+```json
+{
+  "navigation": [
+    {
+      "group": "",
+      "pages": ["introduction/introduction"]
+    },
+    {
+      "group": "Getting Started",
+      "pages": [
+        "getting-started/quickstart",
+        "getting-started/sidebar-navigation",
+        "getting-started/groups-tabs",
+        "getting-started/content-folder",
+        "getting-started/customization"
+      ]
+    },
+    {
+      "group": "Guides",
+      "pages": [
+        "guides/creating-pages",
+        "guides/image-embeds",
+        "guides/markdown-features",
+        "guides/code-blocks",
+        "guides/tables"
+      ]
+    }
+  ]
+}
 ```
 
 ### Navigation Structure Explained
 
-- **Group**: The name of the section displayed as a header in the sidebar
-  - An empty string (`""`) creates an ungrouped section
-  - A named group creates a collapsible section with a title
-  
-- **Pages**: An array of page references or nested groups
-  - String entries are paths to MDX files (without the `.mdx` extension)
-  - Object entries create nested groups with their own pages
+1. **Root Level Pages**
+   - Use an empty group (`"group": ""`) for pages that should appear at the root level
+   - Example: `["introduction/introduction"]`
 
-## Adding New Pages to the Sidebar
+2. **Grouped Pages**
+   - Create groups to organize related pages together
+   - Each group has:
+     - `group`: The display name for the group
+     - `pages`: Array of page paths relative to the content directory
+   - Example:
+     ```json
+     {
+       "group": "Getting Started",
+       "pages": [
+         "getting-started/quickstart",
+         "getting-started/sidebar-navigation"
+       ]
+     }
+     ```
 
-To add new pages to your documentation:
+3. **Page Paths**
+   - Page paths should be relative to your content directory
+   - Format: `folder/file-name` (without the `.mdx` extension)
+   - Example: `"guides/creating-pages"`
 
-1. **Create the MDX file** in the appropriate directory
-2. **Update the navigation configuration** in `site.config.json`
+4. **Optional Icons**
+   - Groups can have optional icons using the `favicon` property
+   - Example:
+     ```json
+     {
+       "group": "Deployment",
+       "favicon": "rocket",
+       "pages": ["deployments/aws"]
+     }
+     ```
 
-### Example: Adding a Simple Page
+## Best Practices
 
-Let's say you want to add a "Best Practices" page to the Getting Started section:
+1. **Organize Logically**
+   - Group related content together
+   - Use clear, descriptive group names
+   - Keep the structure shallow (avoid deep nesting)
 
-1. Create a file at `content/docs/getting-started/best-practices.mdx`
-2. Update the navigation in `site.config.json`:
+2. **URL Structure**
+   - Use kebab-case for file names (`my-page` instead of `myPage`)
+   - Create folders for each major section
+   - Keep URLs descriptive but concise
+
+3. **Maintenance**
+   - Keep the configuration file organized and well-commented
+   - Update the navigation when adding or removing pages
+   - Test all links after making changes
+
+## Example Configuration
+
+Here's a complete example of a `site.config.json` navigation structure:
 
 ```json
 {
-  "group": "Getting Started",
-  "pages": [
-    "getting-started/installation",
-    "getting-started/configuration",
-    "getting-started/quickstart",
-    "getting-started/best-practices", // Your new page
-    "getting-started/troubleshooting"
-  ]
-}
-```
-
-### Example: Adding a Nested Section
-
-For more complex documentation, you can create nested sections:
-
-```json
-{
-  "group": "Advanced",
-  "pages": [
-    "advanced/overview",
+  "primaryTab": {
+    "name": "Documentation"
+  },
+  "tabs": [
     {
-      "group": "Customization",
+      "name": "Advanced",
+      "url": "advanced"
+    },
+    {
+      "name": "API Reference",
+      "url": "api"
+    }
+  ],
+  "navigation": [
+    {
+      "group": "",
+      "pages": ["introduction/introduction"]
+    },
+    {
+      "group": "Getting Started",
       "pages": [
-        "advanced/customization/themes",
-        "advanced/customization/components"
+        "getting-started/quickstart",
+        "getting-started/configuration"
       ]
     },
-    "advanced/plugins",
-    "advanced/security"
+    {
+      "group": "Deployment",
+      "favicon": "rocket",
+      "pages": ["deployments/aws"]
+    }
   ]
 }
 ```
 
-This creates a structure like:
 
-- Advanced
-  - Overview
-  - Customization
-    - Themes
-    - Components
-  - Plugins
-  - Security
 
-## Configuring Tabs
 
-The `tabs` array configures the main navigation tabs at the top of your site:
 
-```json
-"primaryTab": {
-  "name": "Documentation"
-},
+This structure provides a clean and organized way to handle complex documentation with multiple levels of categorization.
 
-"tabs": [
-  {
-    "name": "Advanced",
-    "url": "advanced"
-  },
-  {
-    "name": "API Reference",
-    "url": "api"
-  },
-  {
-    "name": "Changelog",
-    "url": "changelog"
-  }
-]
-```
-
-- The `primaryTab` is your main documentation tab
-- Each additional tab has a `name` (display text) and a `url` (the path component)
-- The URL determines which content appears when that tab is selected
-
-## Tips for Effective Configuration
-
-1. **Consistent Naming**: Use consistent naming patterns for files and folders
-2. **Logical Grouping**: Group related content together in the navigation
-3. **Progressive Disclosure**: Organize content from basic to advanced
-4. **Keep Paths Accurate**: Ensure navigation paths match your actual file structure
-5. **Restart After Changes**: After editing `site.config.json`, restart your development server
-
-## Troubleshooting
-
-- If pages don't appear in the sidebar, check that the path in `navigation` matches the actual file path
-- If tabs don't work correctly, verify that the `url` in the tab configuration matches the corresponding section in the navigation
-- File paths are case-sensitive - ensure the case matches between your files and configuration 
+After making changes to `site.config.json`
