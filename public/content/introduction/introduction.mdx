@@ -9,7 +9,7 @@ Open Docs is a documentation framework that allows you to create beautiful, resp
 ## Key Features
 
 - **MDX Support**: Write documentation in Markdown with JSX components for interactive content.
-- **Material UI**: Beautiful and responsive UI components that follow Material Design guidelines.
+- **Bootstrap**: Built with React Bootstrap for a polished, responsive UI with pre-built components
 - **TypeScript**: Type-safe code for better developer experience and fewer bugs.
 - **Fast & Responsive**: Optimized for speed and works great on all devices and screen sizes.
 - **Dark Mode**: Built-in support for light and dark themes.
@@ -47,27 +47,21 @@ The project structure is organized as follows:
 
 ```
 open-docs/
-├── public/
+├── public/               # Static assets (images, fonts, favicon)
 ├── src/
-│   ├── components/
-│   ├── content/
-│   ├── layouts/
-│   ├── pages/
-│   ├── theme/
-│   ├── App.tsx
-│   ├── index.tsx
-│   └── ...
+│   ├── components/       # React components including navigation config
+│   ├── content/          # MDX documentation files
+│   │   ├── introduction/
+│   │   ├── guides/
+│   │   ├── api/
+│   │   └── resources/
+│   ├── config/           # Site Configuration files
+│   │   └── site.config.json
+│   └── index.tsx         # Application entry point
 ├── package.json
-├── tsconfig.json
-└── ...
+└── tsconfig.json
 ```
 
-- `public/`: Static assets like images, fonts, and the favicon.
-- `src/components/`: Reusable React components.
-- `src/content/`: MDX files containing the documentation content.
-- `src/layouts/`: Layout components for different page types.
-- `src/pages/`: React components for different pages.
-- `src/theme/`: Theme configuration and context.
 
 ## Writing Documentation
 
@@ -92,24 +86,23 @@ function MyComponent() {
 
 You can create new MDX files in the `src/content/` directory and they will automatically be available as documentation pages.
 
-## Customizing the Theme
+## Site Configuration
 
-Open Docs comes with a customizable theme based on Material UI. You can modify the theme in the `src/theme/theme.ts` file:
 
-```typescript
-const lightTheme = createTheme({
-  palette: {
-    mode: 'light',
-    primary: {
-      main: '#2e8555',
-    },
-    secondary: {
-      main: '#e6007a',
-    },
-    // Add more customizations here
-  },
-});
-```
+The `site.config.json` file contains the following key configuration options:
+
+- `name`: The name of your documentation site
+- `logo`: Path to your site's logo image
+- `primaryTab`: Configuration for the main documentation tab
+- `tabs`: Array of additional navigation tabs
+- `navigation`: Array of sidebar navigation groups and pages
+- `favicon`: Path to your site's favicon
+- `colors`: Theme color configuration
+- `topbarCtaButton`: Configuration for the call-to-action button in the top bar
+
+
+You can customize all of these options to match your documentation needs. The configuration is automatically applied throughout the site, affecting the theme, navigation, and content organization.
+
 
 ## Deployment
 

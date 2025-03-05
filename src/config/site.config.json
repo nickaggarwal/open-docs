@@ -60,25 +60,26 @@
       "group": "Guides",
       "pages": [
         "guides/creating-pages",
-        "guides/styling",
-        "guides/deployment",
         "guides/image-embeds",
-        {
-          "group": "Authentication",
-          "pages": [
-            "guides/authentication/overview",
-            "guides/authentication/providers",
-            "guides/authentication/jwt"
-          ]
-        },
-        {
-          "group": "Database",
-          "pages": [
-            "guides/database/setup",
-            "guides/database/migrations",
-            "guides/database/queries"
-          ]
-        }
+        "guides/markdown-features",
+        "guides/code-blocks",
+        "guides/tables"
+      ]
+    },
+    {
+      "group": "Deployment",
+      "favicon": "rocket",
+      "pages": [
+        "deployments/aws"
+      ]
+    },
+    {
+      "group": "Resources",
+      "pages": [
+        "resources/faq",
+        "resources/troubleshooting",
+        "resources/community",
+        "resources/contributing"
       ]
     },
     {
@@ -98,15 +99,6 @@
         "api-reference/authentication",
         "api-reference/endpoints",
         "api-reference/error-handling"
-      ]
-    },
-    {
-      "group": "Resources",
-      "pages": [
-        "resources/faq",
-        "resources/troubleshooting",
-        "resources/community",
-        "resources/contributing"
       ]
     },
     {
