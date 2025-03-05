@@ -1,3 +1,10 @@
+---
+title: Content Structure
+description: Learn how to organise the MDX contnet 
+lastUpdated: 2024-03-20
+category: Getting Started
+---
+
 
 ## Folder Organization Rules
 
@@ -93,87 +100,3 @@ Your folder structure should mirror your `site.config.json` navigation:
   ]
 }
 ```
-
-
-## Basic Template Structure
-
-Every MDX file should follow this basic structure:
-
-```mdx
----
-title: Your Page Title
-description: A brief description of the page content (recommended: 150-160 characters)
-lastUpdated: YYYY-MM-DD
-category: Category Name
----
-
-# Main Title
-
-Content goes here...
-```
-
-## Frontmatter
-
-The frontmatter section is enclosed between `---` markers and contains metadata about the page.
-
-### Required Fields
-
-```yaml
----
-title: Page Title          # Appears in navigation and as the main heading
-description: Brief description of the content
-lastUpdated: 2024-03-20    # Date in YYYY-MM-DD format
-category: Category Name    # Used for grouping and filtering
----
-
-
-## Common Patterns
-
-1. **Index Files**
-   - Use `index.mdx` for section landing pages
-   ```
-   api/
-   ├── index.mdx          # API Overview
-   └── authentication/
-       ├── index.mdx      # Authentication Overview
-       ├── oauth.mdx
-       └── jwt.mdx
-   ```
-
-2. **Shared Resources**
-   - Create a `_shared` folder for reusable content
-   ```
-   src/content/
-   ├── _shared/
-   │   ├── components/
-   │   └── snippets/
-   └── docs/
-   ```
-
-3. **Media Organization**
-   - Keep media files close to their content
-   ```
-   getting-started/
-   ├── installation.mdx
-   ├── images/
-   │   └── install-steps.png
-   └── videos/
-       └── tutorial.mp4
-   ```
-
-## Tips for Maintenance
-
-1. **Regular Cleanup**
-   - Remove unused files and folders
-   - Keep asset folders organized
-   - Update or archive outdated content
-
-2. **Consistent Naming**
-   - Follow the same naming convention throughout
-   - Use descriptive but concise names
-   - Document any special naming requirements
-
-3. **Documentation Updates**
-   - Keep navigation and content in sync
-   - Update related files when moving content
-   - Maintain a changelog for major structure changes
