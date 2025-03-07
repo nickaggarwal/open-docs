@@ -14,7 +14,7 @@ const s3Client = new S3Client({
 });
 
 const BUCKET_NAME = process.env.AWS_BUCKET_NAME;
-const BUILD_DIR = path.join(__dirname, '../dist'); // or '../out' for Next.js
+const BUILD_DIR = path.join(__dirname, '../build'); // Changed from 'dist' to 'build'
 
 async function uploadFile(filePath, bucketPath) {
   const content = await fs.readFile(filePath);

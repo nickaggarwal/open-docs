@@ -1,0 +1,84 @@
+---
+title: AWS S3 Deployment
+description: Learn how to deploy your documentation site to AWS S3
+lastUpdated: 2024-03-20
+category: Deployment
+---
+
+# Deploying to AWS S3
+
+This guide explains how to deploy your documentation site to AWS S3.
+
+## Prerequisites
+
+1. AWS Account with S3 access
+2. AWS CLI installed and configured
+3. S3 bucket created and configured for static website hosting
+
+## Configuration
+
+1. Create a `.env` file in your project root:
+
+```env
+AWS_ACCESS_KEY_ID=your_access_key_id
+AWS_SECRET_ACCESS_KEY=your_secret_access_key
+AWS_REGION=your_region
+AWS_BUCKET_NAME=your_bucket_name
+```
+
+2. Configure your S3 bucket for static website hosting:
+
+- Enable static website hosting
+- Set index document to `index.html`
+- Set error document to `404.html`
+- Configure bucket policy for public access:
+
+```json
+{
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Sid": "PublicReadGetObject",
+            "Effect": "Allow",
+            "Principal": "*",
+            "Action": "s3:GetObject",
+            "Resource": "arn:aws:s3:::your-bucket-name/*"
+        }
+    ]
+}
+```
+
+## Deployment Commands
+
+```bash
+# Deploy to staging
+npm run deploy:staging
+
+# Deploy to production
+npm run deploy:production
+```
+
+## Environment Variables
+
+| Variable | Description |
+|----------|-------------|
+| AWS_ACCESS_KEY_ID | Your AWS access key |
+| AWS_SECRET_ACCESS_KEY | Your AWS secret key |
+| AWS_REGION | AWS region (e.g., us-east-1) |
+| AWS_BUCKET_NAME | S3 bucket name |
+
+## Deployment Process
+
+1. Builds the project using `npm run build`
+2. Uploads the built files to S3
+3. Sets appropriate content types and cache headers
+4. Provides deployment status and logs
+
+## Troubleshooting
+
+If you encounter issues:
+
+1. Check AWS credentials are correct
+2. Verify bucket permissions
+3. Ensure build directory exists
+4. Check network connectivity 
