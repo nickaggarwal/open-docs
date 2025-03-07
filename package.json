@@ -30,7 +30,10 @@
     "start": "cp -r src/content public/ && react-scripts start",
     "build": "cp -r src/content public/ && react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "deploy": "npm run build && node scripts/deploy-to-s3.js",
+    "deploy:staging": "npm run build && ENVIRONMENT=staging node scripts/deploy-to-s3.js",
+    "deploy:production": "npm run build && ENVIRONMENT=production node scripts/deploy-to-s3.js"
   },
   "eslintConfig": {
     "extends": [
