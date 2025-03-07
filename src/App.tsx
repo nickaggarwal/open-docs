@@ -4,6 +4,7 @@ import MainLayout from './layouts/MainLayout';
 import HomePage from './pages/HomePage';
 import DocPage from './pages/DocPage';
 import { siteConfig, navigationConfig } from './components';
+import { ScrollToTop } from './components/ScrollToTop';
 
 /**
  * Main Application Component
@@ -76,6 +77,7 @@ function App() {
 
   return (
     <Router>
+      <ScrollToTop />
       <MainLayout toggleTheme={toggleThemeMode} mode={themeMode}>
         <Routes>
           {/* Home page */}
