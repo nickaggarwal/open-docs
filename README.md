@@ -1,6 +1,6 @@
 # Open Docs
 
-A documentation website built with React, TypeScript, Material UI, and MDX, inspired by Docusaurus.
+A documentation website built with React, TypeScript, Bootstrap, and MDX, inspired by Docusaurus.
 
 ## Features
 
