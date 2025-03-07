@@ -33,9 +33,9 @@ function App() {
     document.documentElement.style.setProperty('--primary-dark-color', siteConfig.colors.dark);
   }, []);
 
-  // Find first doc and API page for default navigation
-  const defaultDocPage = navigationConfig.sidebar.docs[0]?.items?.[0]?.id || 'introduction';
-  const defaultApiPage = navigationConfig.sidebar.api[0]?.items?.[0]?.id || 'overview';
+  // Default pages for different sections
+  const defaultDocPage = 'introduction';
+  const defaultApiPage = navigationConfig.sidebar.api?.[0]?.items?.[0]?.id || 'overview';
   
   // Helper function to find the default page for a specific tab/section
   const findDefaultPageForSection = (sectionName: string): string => {
@@ -80,8 +80,8 @@ function App() {
       <ScrollToTop />
       <MainLayout toggleTheme={toggleThemeMode} mode={themeMode}>
         <Routes>
-          {/* Home page */}
-          <Route path="/" element={<HomePage />} />
+          {/* Home page redirects to introduction */}
+          <Route path="/" element={<Navigate to={`/docs/${defaultDocPage}`} replace />} />
           
           {/* Documentation routes */}
           <Route 
@@ -133,7 +133,7 @@ function App() {
           ))}
           
           {/* Fallback route */}
-          <Route path="*" element={<Navigate to="/" replace />} />
+          <Route path="*" element={<Navigate to={`/docs/${defaultDocPage}`} replace />} />
         </Routes>
       </MainLayout>
     </Router>

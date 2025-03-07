@@ -4,7 +4,7 @@
   "favicon": "/favicon.svg",
   
   "api": {
-    "baseUrl": "https://api.example.com/",
+    "baseUrl": "https://open-docs.org",
     "auth": {
       "method": "key",
       "name": "Authorization"
@@ -19,7 +19,7 @@
   
   "topbarCtaButton": {
     "name": "Get Started",
-    "url": "https://github.com/yourusername/open-docs"
+    "url": "https://github.com/nickaggarwal/open-docs"
   },
   
   "primaryTab": {
@@ -44,7 +44,7 @@
   "navigation": [
     {
       "group": "",
-      "pages": ["introduction/introduction"]
+      "pages": ["introduction"]
     },
     {
       "group": "Getting Started",
@@ -126,8 +126,8 @@
   ],
   
   "footerSocials": {
-    "twitter": "https://twitter.com/yourusername",
-    "github": "https://github.com/yourusername",
-    "linkedin": "https://linkedin.com/in/yourusername"
+    "twitter": "https://twitter.com/nilesh_agarwal2",
+    "github": "https://github.com/nickaggarwal/open-docs",
+    "linkedin": "https://linkedin.com/in/nilesh-agarwal"
   }
 } 
