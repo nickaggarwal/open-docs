@@ -70,7 +70,7 @@
       "group": "Deployment",
       "favicon": "rocket",
       "pages": [
-        "deployments/aws"
+        "deployment/aws-deployment"
       ]
     },
     {

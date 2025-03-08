@@ -1,0 +1,168 @@
+---
+title: Site Customization
+description: Learn how to customize your documentation site's basic appearance and branding
+lastUpdated: 2024-03-20
+category: Getting Started
+---
+
+# Site Customization
+
+Learn how to customize the basic appearance and branding of your documentation site through the `site.config.json` file.
+
+## Basic Site Configuration
+
+Configure your site's basic information and branding in the root level of `site.config.json`:
+
+```json
+{
+  "name": "Open Docs",
+  "logo": "/logo.svg",
+  "favicon": "/favicon.svg"
+}
+```
+
+| Option | Description | Example |
+|--------|-------------|---------|
+| `name` | Your documentation site's name. Appears in the navbar and browser title | `"Open Docs"` |
+| `logo` | Path to your logo image. Displayed in the top navigation bar | `"/logo.svg"` or `"/images/logo.png"` |
+| `favicon` | Path to your favicon. Shown in browser tabs and bookmarks | `"/favicon.svg"` or `"/favicon.ico"` |
+
+### Logo Requirements
+- Recommended formats: SVG (preferred), PNG, or WebP
+- Maximum height: 32px
+- Transparent background recommended
+- Light and dark versions can be provided using the same filename in different folders:
+  ```
+  public/
+  ├── logo.svg           # Default logo
+  ├── light/
+  │   └── logo.svg      # Light theme version
+  └── dark/
+      └── logo.svg      # Dark theme version
+  ```
+
+### Favicon Guidelines
+- Recommended format: SVG or ICO
+- Include multiple sizes: 16x16, 32x32, and 180x180 (for Apple devices)
+- Place in the `public` directory
+- Consider providing both light and dark versions
+
+## Color Scheme
+
+Customize your site's color palette to match your brand:
+
+```json
+{
+  "colors": {
+    "primary": "#2E8555",
+    "light": "#4CAF50",
+    "dark": "#1B5E20"
+  }
+}
+```
+
+| Color | Usage | Example |
+|-------|-------|---------|
+| `primary` | Main brand color used for buttons, links, and active states | `"#2E8555"` |
+| `light` | Light variant used for hover states and subtle accents | `"#4CAF50"` |
+| `dark` | Dark variant used for text and high-contrast elements | `"#1B5E20"` |
+
+### Color Best Practices
+
+1. **Accessibility**
+   - Ensure sufficient contrast between text and background
+   - Test colors in both light and dark modes
+   - Use [WebAIM Contrast Checker](https://webaim.org/resources/contrastchecker/) to verify accessibility
+
+2. **Color Harmony**
+   ```json
+   {
+     "colors": {
+       "primary": "#1976D2",   // Main blue
+       "light": "#42A5F5",     // Lighter blue (20% lighter)
+       "dark": "#0D47A1"       // Darker blue (20% darker)
+     }
+   }
+   ```
+
+3. **Testing Colors**
+   - View your site in different browsers
+   - Check on both desktop and mobile devices
+   - Verify readability in different lighting conditions
+
+## Footer Social Links
+
+Add social media links to your documentation footer:
+
+```json
+{
+  "footerSocials": {
+    "twitter": "https://twitter.com/yourusername",
+    "github": "https://github.com/yourusername/open-docs",
+    "linkedin": "https://linkedin.com/in/yourusername"
+  }
+}
+```
+
+### Supported Social Platforms
+
+| Platform | Key | Icon |
+|----------|-----|------|
+| Twitter | `twitter` | Twitter/X icon |
+| GitHub | `github` | GitHub icon |
+| LinkedIn | `linkedin` | LinkedIn icon |
+| Discord | `discord` | Discord icon |
+| YouTube | `youtube` | YouTube icon |
+
+### Social Links Guidelines
+
+1. **URL Format**
+   ```json
+   {
+     "footerSocials": {
+       "github": "https://github.com/organization/repo",
+       "twitter": "https://twitter.com/username",
+       "linkedin": "https://linkedin.com/in/username"
+     }
+   }
+   ```
+
+2. **Best Practices**
+   - Use complete URLs (including `https://`)
+   - Verify all links are active
+   - Keep URLs up to date
+   - Remove unused social platforms
+
+## Example Configuration
+
+Here's a complete example combining all these customizations:
+
+```json
+{
+  "name": "Open Docs",
+  "logo": "/logo.svg",
+  "favicon": "/favicon.svg",
+  
+  "colors": {
+    "primary": "#2E8555",
+    "light": "#4CAF50",
+    "dark": "#1B5E20"
+  },
+  
+  "footerSocials": {
+    "twitter": "https://twitter.com/",
+    "github": "https://github.com/",
+    "linkedin": "https://linkedin.com"
+  }
+}
+```
+
+## Applying Changes
+
+After modifying these settings:
+
+1. Save the `site.config.json` file
+2. Restart your development server
+3. Hard refresh your browser (Ctrl/Cmd + Shift + R)
+4. Test in both light and dark modes
+5. Verify all social links work correctly 
