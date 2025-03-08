@@ -16,7 +16,7 @@ interface MDXRendererProps {
  * Handles conversion of custom components to markdown-friendly format
  */
 const preprocessMDXContent = (mdxContent: string): string => {
-  console.log("Preprocessing MDX content");
+  // console.log("Preprocessing MDX content");
   
   // Extract frontmatter
   let processedContent = mdxContent.replace(/^---\n([\s\S]*?)\n---\n/, '');
@@ -145,7 +145,7 @@ const preprocessMDXContent = (mdxContent: string): string => {
   // Handle export statements
   processedContent = processedContent.replace(/export.*?function.*?{[\s\S]*?}.*?<\/.*>/g, '');
   
-  console.log("Preprocessed content:", processedContent.substring(0, 200) + "...");
+  // console.log("Preprocessed content:", processedContent.substring(0, 200) + "...");
   return processedContent;
 };
 

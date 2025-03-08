@@ -20,16 +20,16 @@ import { siteConfig } from '../components';
 // For this example, we're simulating content loading
 const loadMDXContent = async (id: string): Promise<string | null> => {
   try {
-    console.log(`Loading content for: ${id}`);
+    // console.log(`Loading content for: ${id}`);
     
     // First, try to read the actual MDX file from the filesystem
     const mdxContent = await readMdxFile(id);
     if (mdxContent) {
-      console.log(`Successfully loaded MDX content from file for ${id}`);
+      // console.log(`Successfully loaded MDX content from file for ${id}`);
       return mdxContent;
     }
     
-    console.log('Content file not found, falling back to hardcoded content map');
+    // console.log('Content file not found, falling back to hardcoded content map');
     
     // Fallback to hardcoded content map for demo purposes
     const contentMap: Record<string, string> = {
@@ -44,18 +44,19 @@ const loadMDXContent = async (id: string): Promise<string | null> => {
       'guides/creating-pages': '# Creating Pages\n\nLearn how to create pages in Open Docs.'
     };
     
-    console.log('Available content keys in fallback map:', Object.keys(contentMap));
+    // console.log('Available content keys in fallback map:', Object.keys(contentMap));
     
     if (contentMap[id]) {
-      console.log(`Found content for ${id} in fallback map`);
+      // console.log(`Found content for ${id} in fallback map`);
       return contentMap[id];
     }
     
-    // If all else fails, generate a placeholder
-    console.log(`No content found for ${id}, generating placeholder`);
-    return `# ${id.split('/').pop()?.charAt(0).toUpperCase()}${id.split('/').pop()?.slice(1).replace(/-/g, ' ')}\n\nThis is a placeholder for ${id}.`;
+    // console.log(`No content found for ${id}, generating placeholder`);
+    
+    // Generate a placeholder for missing content
+    return `# ${id.split('/').pop()?.replace(/-/g, ' ')}\n\nThis content is coming soon!`;
   } catch (error) {
-    console.error('Error loading MDX content:', error);
+    console.error(`Error loading content for ${id}:`, error);
     return null;
   }
 };
@@ -66,7 +67,7 @@ const readMdxFile = async (id: string): Promise<string | null> => {
   try {
     // In a production app, this would be done differently using webpack or a backend
     // For this demo, we'll directly read the file from src/content
-    console.log(`Attempting to read MDX file for ${id}`);
+    // console.log(`Attempting to read MDX file for ${id}`);
     
     // Try multiple potential locations for the content
     const paths = [
@@ -83,20 +84,20 @@ const readMdxFile = async (id: string): Promise<string | null> => {
     // Try each path until we find the content
     for (const path of paths) {
       try {
-        console.log(`Trying to load from: ${path}`);
+        // console.log(`Trying to load from: ${path}`);
         const response = await fetch(path);
         
         if (response.ok) {
           content = await response.text();
-          console.log(`Successfully loaded content from: ${path}`);
+          // console.log(`Successfully loaded content from: ${path}`);
           return content;
         }
       } catch (e) {
-        console.log(`Failed to load from: ${path}`);
+        // console.log(`Failed to load from: ${path}`);
       }
     }
     
-    console.error(`Could not load MDX file for ${id} from any location`);
+    // console.error(`Could not load MDX file for ${id} from any location`);
     return null;
   } catch (error) {
     console.error(`Error reading MDX file for ${id}:`, error);
@@ -150,11 +151,11 @@ const DocPage: React.FC = () => {
     setError(null);
     setContent(null);
     
-    console.log(`DocPage: Loading content for ID: ${id}`);
-    console.log('Current URL path:', location.pathname);
-    console.log('Is API section:', isApiSection);
-    console.log('Section:', section);
-    console.log('Route params:', params);
+    // console.log(`DocPage: Loading content for ID: ${id}`);
+    // console.log('Current URL path:', location.pathname);
+    // console.log('Is API section:', isApiSection);
+    // console.log('Section:', section);
+    // console.log('Route params:', params);
 
     // Load content from MDX files
     const fetchContent = async () => {
@@ -162,19 +163,19 @@ const DocPage: React.FC = () => {
         const mdxContent = await loadMDXContent(id);
         
         if (mdxContent) {
-          console.log(`Content loaded successfully for ${id}`);
-          console.log(`Content length: ${mdxContent.length} characters`);
+          // console.log(`Content loaded successfully for ${id}`);
+          // console.log(`Content length: ${mdxContent.length} characters`);
           // Log the first 100 characters to debug
-          console.log(`Content preview: ${mdxContent.substring(0, 100)}...`);
+          // console.log(`Content preview: ${mdxContent.substring(0, 100)}...`);
           setContent(mdxContent);
           setLoading(false);
         } else {
-          console.error(`Content for "${id}" not found.`);
+          // console.error(`Content for "${id}" not found.`);
           setError(`Content for "${id}" not found.`);
           setLoading(false);
         }
       } catch (err) {
-        console.error('Failed to load content:', err);
+        // console.error('Failed to load content:', err);
         setError('Failed to load content. Please try again later.');
         setLoading(false);
       }

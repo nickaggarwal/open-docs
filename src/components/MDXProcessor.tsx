@@ -6,6 +6,8 @@ import { Box, CircularProgress, Typography } from '@mui/material';
 import { Callout } from './Callout';
 import { CodeBlock } from './CodeBlock';
 import { TabGroup, Tab } from './Tabs';
+import { BootstrapTable } from './BootstrapTable';
+import remarkGfm from 'remark-gfm';
 
 // Define custom components to be used in MDX
 const components = {
@@ -13,6 +15,12 @@ const components = {
   CodeBlock,
   TabGroup,
   Tab,
+  table: BootstrapTable,
+  thead: (props: any) => <thead className="table-light" {...props} />,
+  tbody: (props: any) => <tbody {...props} />,
+  tr: (props: any) => <tr {...props} />,
+  th: (props: any) => <th scope="col" className="fw-bold" {...props} />,
+  td: (props: any) => <td {...props} />,
   a: (props: any) => <a {...props} style={{ color: '#2196f3', textDecoration: 'none' }} />,
   h1: (props: any) => <Typography variant="h1" component="h1" {...props} sx={{ mt: 4, mb: 2 }} />,
   h2: (props: any) => <Typography variant="h2" component="h2" {...props} sx={{ mt: 4, mb: 2 }} />,
@@ -76,7 +84,7 @@ const MDXProcessor: React.FC<MDXProcessorProps> = ({ content }) => {
         const compiled = await compile(wrappedContent, {
           outputFormat: 'function-body',
           development: true,
-          // Add any necessary plugins here
+          remarkPlugins: [remarkGfm]
         });
         
         // Convert the compiled output to a module
@@ -170,30 +178,16 @@ const MDXProcessor: React.FC<MDXProcessorProps> = ({ content }) => {
             bgcolor: 'action.hover',
             fontStyle: 'italic',
           },
-          '& img': {
-            maxWidth: '100%',
-            height: 'auto',
-            borderRadius: '4px',
-          },
           '& hr': {
             border: 'none',
             borderTop: '1px solid',
             borderColor: 'divider',
             my: 3,
           },
-          '& table': {
-            width: '100%',
-            borderCollapse: 'collapse',
-            mb: 2,
-          },
-          '& th, & td': {
-            border: '1px solid',
-            borderColor: 'divider',
-            padding: 1,
-          },
-          '& th': {
-            bgcolor: 'action.hover',
-            fontWeight: 600,
+          '& img': {
+            maxWidth: '100%',
+            height: 'auto',
+            borderRadius: '4px',
           },
         }}
       >

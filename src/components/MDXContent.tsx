@@ -30,8 +30,6 @@ const components = {
 const MDXContent: React.FC<MDXContentProps> = ({ children }) => {
   const theme = useTheme();
   
-  console.log('MDXContent rendering with children:', children);
-  
   return (
     <Box
       sx={{

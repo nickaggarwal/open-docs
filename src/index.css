@@ -218,4 +218,28 @@ h2 {
   display: flex;
   font-family: '__Inter_e5ab12', '__Inter_Fallback_e5ab12', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
   font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+}
+
+/* Direct table styling - this will apply to all tables in the app */
+table {
+  width: 100% !important;
+  margin-bottom: 1rem !important;
+  border-collapse: collapse !important;
+  border: 1px solid #dee2e6 !important;
+}
+
+table thead {
+  background-color: rgba(0, 0, 0, 0.05) !important;
+  border-bottom: 2px solid #dee2e6 !important;
+}
+
+table th,
+table td {
+  padding: 0.75rem !important;
+  vertical-align: top !important;
+  border: 1px solid #dee2e6 !important;
+}
+
+table tbody tr:nth-of-type(odd) {
+  background-color: rgba(0, 0, 0, 0.05) !important;
 } 

@@ -28,7 +28,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, toggleTheme, mode = '
 
   // Track path changes for debugging
   useEffect(() => {
-    console.log('MainLayout detected path change:', currentPath);
+    // console.log('MainLayout detected path change:', currentPath);
   }, [currentPath]);
 
   // Update theme colors based on site config
@@ -40,18 +40,18 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, toggleTheme, mode = '
 
   // Get navigation items based on current path
   const getNavigationItems = () => {
-    console.log('Getting navigation items for path:', currentPath);
+    // console.log('Getting navigation items for path:', currentPath);
     
     let navigationItems;
     
     // Get all tab labels to filter them out from general sidebar
     const tabLabels = siteConfig.tabs.map(tab => tab.name);
-    console.log('Tab labels to filter out from main sidebar:', tabLabels);
+    // console.log('Tab labels to filter out from main sidebar:', tabLabels);
     
     // Determine which navigation items to show based on the current path
     if (currentPath.startsWith('/api')) {
       // API has its own dedicated sidebar items
-      console.log('Using API navigation items');
+      // console.log('Using API navigation items');
       navigationItems = navigationConfig.sidebar.api;
     } else if (currentPath.startsWith('/docs/')) {
       // For docs routes, check if we're in a specific section that matches a tab
@@ -81,7 +81,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, toggleTheme, mode = '
       ];
       
       const allMappings = [...tabMappings, ...specialMappings];
-      console.log('Tab mappings:', allMappings);
+      // console.log('Tab mappings:', allMappings);
       
       // Find if current path matches any of our tab paths
       const matchedTab = allMappings.find(tab => 
@@ -91,7 +91,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, toggleTheme, mode = '
       
       if (matchedTab) {
         // If in a tab section, only show that section in sidebar
-        console.log(`Using ${matchedTab.label} navigation items only`);
+        // console.log(`Using ${matchedTab.label} navigation items only`);
         navigationItems = navigationConfig.sidebar.docs.filter(item => 
           item.label === matchedTab.label
         );
@@ -105,13 +105,13 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, toggleTheme, mode = '
         
         // If still no items found, fallback to all docs
         if (navigationItems.length === 0) {
-          console.log(`No navigation items found for ${matchedTab.label}, using all docs`);
+          // console.log(`No navigation items found for ${matchedTab.label}, using all docs`);
           navigationItems = navigationConfig.sidebar.docs;
         }
       } else {
         // For general docs routes (like /docs/introduction), 
         // filter out tab-specific sections to keep the sidebar clean
-        console.log('Using filtered docs navigation items for general docs route');
+        // console.log('Using filtered docs navigation items for general docs route');
         
         // Filter out tab-specific sections from general navigation
         navigationItems = navigationConfig.sidebar.docs.filter(item => 
@@ -120,14 +120,14 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, toggleTheme, mode = '
         
         // If we accidentally filtered everything out, fallback to all docs
         if (navigationItems.length === 0) {
-          console.log('All items were filtered - falling back to all docs');
+          // console.log('All items were filtered - falling back to all docs');
           navigationItems = navigationConfig.sidebar.docs;
         }
       }
     } else {
       // Default to docs for non-docs routes (like homepage)
       // But exclude tab-specific sections to keep the main sidebar clean
-      console.log('Using filtered docs navigation items for main sidebar');
+      // console.log('Using filtered docs navigation items for main sidebar');
       
       // Filter out tab-specific sections from general navigation
       navigationItems = navigationConfig.sidebar.docs.filter(item => 
@@ -136,7 +136,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, toggleTheme, mode = '
       
       // If we accidentally filtered everything out, fallback to all docs
       if (navigationItems.length === 0) {
-        console.log('All items were filtered - falling back to all docs');
+        // console.log('All items were filtered - falling back to all docs');
         navigationItems = navigationConfig.sidebar.docs;
       }
     }
@@ -148,7 +148,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children, toggleTheme, mode = '
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Search query:', searchQuery);
+    // console.log('Search query:', searchQuery);
     // Implement search functionality
   };
 

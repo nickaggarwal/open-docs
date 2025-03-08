@@ -71,10 +71,6 @@ function App() {
     return sectionName.toLowerCase();
   };
 
-  console.log('Default doc page:', defaultDocPage);
-  console.log('Default API page:', defaultApiPage);
-  console.log('Navigation config:', navigationConfig);
-
   return (
     <Router>
       <ScrollToTop />
