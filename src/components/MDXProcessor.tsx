@@ -8,6 +8,7 @@ import { CodeBlock } from './CodeBlock';
 import { TabGroup, Tab } from './Tabs';
 import { BootstrapTable } from './BootstrapTable';
 import remarkGfm from 'remark-gfm';
+import MDXRenderer from './MDXRenderer'; // Import MDXRenderer as fallback
 
 // Define custom components to be used in MDX
 const components = {
@@ -15,6 +16,23 @@ const components = {
   CodeBlock,
   TabGroup,
   Tab,
+  // Add new callout components that map to Callout with different types
+  Note: (props: any) => {
+    // Ensure props.children is properly rendered
+    return <Callout type="note" {...props} />;
+  },
+  Warning: (props: any) => {
+    return <Callout type="warning" {...props} />;
+  },
+  Tip: (props: any) => {
+    return <Callout type="tip" {...props} />;
+  },
+  Info: (props: any) => {
+    return <Callout type="info" {...props} />;
+  },
+  Caution: (props: any) => {
+    return <Callout type="caution" {...props} />;
+  },
   table: BootstrapTable,
   thead: (props: any) => <thead className="table-light" {...props} />,
   tbody: (props: any) => <tbody {...props} />,
@@ -52,6 +70,13 @@ const components = {
   // Add more component mappings as needed
 };
 
+// Define individual callout components for the MDX context
+const Note = (props: any) => <Callout type="note" {...props} />;
+const Warning = (props: any) => <Callout type="warning" {...props} />;
+const Tip = (props: any) => <Callout type="tip" {...props} />;
+const Info = (props: any) => <Callout type="info" {...props} />;
+const Caution = (props: any) => <Callout type="caution" {...props} />;
+
 interface MDXProcessorProps {
   content: string;
 }
@@ -60,6 +85,7 @@ const MDXProcessor: React.FC<MDXProcessorProps> = ({ content }) => {
   const [mdxModule, setMdxModule] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [useRenderer, setUseRenderer] = useState(false);
 
   useEffect(() => {
     async function processMdx() {
@@ -71,7 +97,15 @@ const MDXProcessor: React.FC<MDXProcessorProps> = ({ content }) => {
       try {
         setLoading(true);
         
-        // Wrap the content with proper MDX imports
+        // Check for potential problematic patterns
+        if (content.includes('export default') || content.includes('export function')) {
+          // Use MDXRenderer instead if content has complex exports
+          setUseRenderer(true);
+          setLoading(false);
+          return;
+        }
+        
+        // Wrap the content with proper MDX imports and add the callout components
         const wrappedContent = `
           import { Callout } from '../components/Callout';
           import { CodeBlock } from '../components/CodeBlock';
@@ -80,44 +114,68 @@ const MDXProcessor: React.FC<MDXProcessorProps> = ({ content }) => {
           ${content}
         `;
         
-        // Compile MDX to JSX
-        const compiled = await compile(wrappedContent, {
-          outputFormat: 'function-body',
-          development: true,
-          remarkPlugins: [remarkGfm]
-        });
-        
-        // Convert the compiled output to a module
-        const code = String(compiled);
-        
-        // Use Function constructor to create a module from the compiled code
-        const fn = new Function(
-          'React', 
-          ...Object.keys(runtime),
-          'components',
-          'Callout',
-          'CodeBlock',
-          'TabGroup',
-          'Tab',
-          `${code}; return MDXContent;`
-        );
-        
-        // Execute the function to get the MDXContent component
-        const MDXContent = fn(
-          React, 
-          ...Object.values(runtime),
-          components,
-          Callout,
-          CodeBlock, 
-          TabGroup,
-          Tab
-        );
-        
-        setMdxModule({ default: MDXContent });
-        setLoading(false);
+        try {
+          // Compile MDX to JSX with safety precautions
+          const compiled = await compile(wrappedContent, {
+            outputFormat: 'function-body',
+            development: true,
+            remarkPlugins: [remarkGfm]
+          });
+          
+          // Convert the compiled output to a module
+          const code = String(compiled);
+          
+          // Use Function constructor to create a module from the compiled code
+          const fn = new Function(
+            'React', 
+            ...Object.keys(runtime),
+            'components',
+            'Callout',
+            'CodeBlock',
+            'TabGroup',
+            'Tab',
+            'Note',
+            'Warning',
+            'Tip',
+            'Info',
+            'Caution',
+            `${code}; return MDXContent;`
+          );
+          
+          // Execute the function to get the MDXContent component
+          try {
+            const MDXContent = fn(
+              React, 
+              ...Object.values(runtime),
+              components,
+              Callout,
+              CodeBlock, 
+              TabGroup,
+              Tab,
+              Note,
+              Warning,
+              Tip,
+              Info,
+              Caution
+            );
+            
+            setMdxModule({ default: MDXContent });
+            setLoading(false);
+          } catch (executionError) {
+            console.error('Error executing MDX:', executionError);
+            setUseRenderer(true);
+            setLoading(false);
+          }
+        } catch (compileError: any) {
+          console.error('MDX compilation error:', compileError);
+          // Fall back to MDXRenderer
+          setUseRenderer(true);
+          setLoading(false);
+        }
       } catch (err: any) {
         console.error('Error processing MDX:', err);
-        setError(`Error processing MDX: ${err.message}`);
+        // Fall back to MDXRenderer
+        setUseRenderer(true);
         setLoading(false);
       }
     }
@@ -133,16 +191,9 @@ const MDXProcessor: React.FC<MDXProcessorProps> = ({ content }) => {
     );
   }
 
-  if (error) {
-    return (
-      <Box sx={{ color: 'error.main', my: 4 }}>
-        <Typography variant="h6">Error Processing MDX</Typography>
-        <Typography>{error}</Typography>
-        <Box sx={{ mt: 2, p: 2, bgcolor: 'background.paper', border: '1px solid', borderColor: 'divider', borderRadius: 1 }}>
-          <pre style={{ overflow: 'auto', maxHeight: '300px' }}>{content}</pre>
-        </Box>
-      </Box>
-    );
+  // If there was an error or we explicitly want to use MDXRenderer, fall back to it
+  if (useRenderer) {
+    return <MDXRenderer content={content} />;
   }
 
   if (!mdxModule) {

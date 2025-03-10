@@ -21,13 +21,28 @@ const preprocessMDXContent = (mdxContent: string): string => {
   // Extract frontmatter
   let processedContent = mdxContent.replace(/^---\n([\s\S]*?)\n---\n/, '');
   
-  // Replace <Callout> components
+  // Replace <Callout> components to preserve their type
   processedContent = processedContent.replace(
     /<Callout type="([^"]*)">\s*([\s\S]*?)\s*<\/Callout>/g,
     (_, type, content) => {
-      return `\n\n> **${type.toUpperCase()}**: ${content.trim()}\n\n`;
+      const title = type.charAt(0).toUpperCase() + type.slice(1);
+      // Make sure we add specific placeholder markers for the renderer to detect
+      return `\n\n> **${title}:** ${content.trim()}\n\n`;
     }
   );
+  
+  // Replace new callout components to preserve their type
+  const calloutTypes = ['Note', 'Warning', 'Tip', 'Info', 'Caution', 'Error', 'Success'];
+  calloutTypes.forEach(calloutType => {
+    const regex = new RegExp(`<${calloutType}>\\s*([\\s\\S]*?)\\s*<\\/${calloutType}>`, 'g');
+    processedContent = processedContent.replace(
+      regex,
+      (_, content) => {
+        // Make sure the callout type is explicitly included in the content
+        return `\n\n> **${calloutType}:** ${content.trim()}\n\n`;
+      }
+    );
+  });
   
   // Replace <TabGroup> and <Tab> components
   processedContent = processedContent.replace(
@@ -139,11 +154,11 @@ const preprocessMDXContent = (mdxContent: string): string => {
     }
   );
   
-  // Remove any remaining JSX component imports
-  processedContent = processedContent.replace(/import.*?from.*?;/g, '');
-  
-  // Handle export statements
-  processedContent = processedContent.replace(/export.*?function.*?{[\s\S]*?}.*?<\/.*>/g, '');
+  // Remove any import statements or export statements that might be causing issues
+  processedContent = processedContent.replace(/import\s+.*?from\s+['"].*?['"]/g, '');
+  processedContent = processedContent.replace(/export\s+default\s+.*?[;{]/g, '');
+  processedContent = processedContent.replace(/export\s+const\s+.*?=/g, 'const _removed_=');
+  processedContent = processedContent.replace(/export\s+function\s+.*?[\s(]/g, 'function _removed_$1');
   
   // console.log("Preprocessed content:", processedContent.substring(0, 200) + "...");
   return processedContent;
@@ -302,6 +317,128 @@ const MDXRenderer: React.FC<MDXRendererProps> = ({ content }) => {
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         components={{
+          // Enhanced blockquote component for callouts
+          blockquote: ({ children, ...props }: MarkdownComponentProps) => {
+            // Default callout type and title
+            let type = 'note';
+            let title = 'Note';
+            
+            console.log("BLOCKQUOTE PROPS:", JSON.stringify(props, null, 2));
+            
+            // Try to extract the content as a string to detect callout type
+            let contentStr = '';
+            const childrenArray = React.Children.toArray(children);
+            
+            // Traverse the children to find the first paragraph with text
+            for (const child of childrenArray) {
+              if (React.isValidElement(child) && child.props && child.props.children) {
+                // Handle direct string content
+                if (typeof child.props.children === 'string') {
+                  contentStr = child.props.children;
+                  break;
+                }
+                // Handle array of content (more common)
+                else if (Array.isArray(child.props.children)) {
+                  // Stringify the first few elements to check for callout markers
+                  contentStr = child.props.children
+                    .slice(0, 3) // Only need first few elements to check for callout type
+                    .map((item: React.ReactNode) => {
+                      if (typeof item === 'string') return item;
+                      if (React.isValidElement(item) && item.props) {
+                        // Try to get text content from child elements like <strong>
+                        if (typeof item.props.children === 'string') {
+                          return item.props.children;
+                        }
+                      }
+                      return '';
+                    })
+                    .join(' ');
+                  break;
+                }
+              }
+            }
+            
+            console.log("Extracted content:", contentStr);
+            
+            // Detect callout type from content
+            if (contentStr.toUpperCase().includes('NOTE:') || contentStr.toUpperCase().includes('**NOTE**')) {
+              type = 'note';
+              title = 'Note';
+            } else if (contentStr.toUpperCase().includes('INFO:') || contentStr.toUpperCase().includes('**INFO**')) {
+              type = 'info';
+              title = 'Info';
+            } else if (contentStr.toUpperCase().includes('TIP:') || contentStr.toUpperCase().includes('**TIP**')) {
+              type = 'tip';
+              title = 'Tip';
+            } else if (contentStr.toUpperCase().includes('WARNING:') || contentStr.toUpperCase().includes('**WARNING**')) {
+              type = 'warning';
+              title = 'Warning';
+            } else if (contentStr.toUpperCase().includes('CAUTION:') || contentStr.toUpperCase().includes('**CAUTION**')) {
+              type = 'caution';
+              title = 'Caution';
+            } else if (contentStr.toUpperCase().includes('ERROR:') || contentStr.toUpperCase().includes('**ERROR**')) {
+              type = 'error';
+              title = 'Error';
+            } else if (contentStr.toUpperCase().includes('SUCCESS:') || contentStr.toUpperCase().includes('**SUCCESS**')) {
+              type = 'success';
+              title = 'Success';
+            }
+            
+            console.log(`Detected callout type: ${type}, title: ${title}`);
+            
+            // Get the appropriate icon class for this callout type
+            const iconClass = getIconClass(type);
+            
+            // CSS variables for styling based on type
+            const cssVariables = {
+              '--callout-bg-color': type === 'note' ? 'rgba(13, 110, 253, 0.1)' :
+                                    type === 'info' ? 'rgba(13, 202, 240, 0.1)' :
+                                    type === 'tip' ? 'rgba(25, 135, 84, 0.1)' :
+                                    type === 'warning' ? 'rgba(255, 193, 7, 0.1)' :
+                                    type === 'caution' ? 'rgba(253, 126, 20, 0.1)' :
+                                    type === 'error' ? 'rgba(220, 53, 69, 0.1)' :
+                                    type === 'success' ? 'rgba(25, 135, 84, 0.1)' :
+                                    'rgba(13, 110, 253, 0.1)',
+              '--callout-border-color': type === 'note' ? '#0d6efd' :
+                                       type === 'info' ? '#0dcaf0' :
+                                       type === 'tip' ? '#198754' :
+                                       type === 'warning' ? '#ffc107' :
+                                       type === 'caution' ? '#fd7e14' :
+                                       type === 'error' ? '#dc3545' :
+                                       type === 'success' ? '#198754' :
+                                       '#0d6efd',
+              '--callout-text-color': type === 'note' ? '#084298' :
+                                     type === 'info' ? '#055160' :
+                                     type === 'tip' ? '#0a3622' :
+                                     type === 'warning' ? '#664d03' :
+                                     type === 'caution' ? '#664d03' :
+                                     type === 'error' ? '#842029' :
+                                     type === 'success' ? '#0a3622' :
+                                     '#084298',
+            } as React.CSSProperties;
+            
+            // Apply appropriate styling based on callout type
+            return (
+              <div 
+                role="note" 
+                className={`callout callout-${type}`} 
+                style={cssVariables}
+                {...props}
+              >
+                <div className="callout-icon">
+                  <i className={iconClass}></i>
+                </div>
+                <div className="callout-content">
+                  <div className="callout-title">
+                    {title}
+                  </div>
+                  <div className="callout-body">
+                    {children}
+                  </div>
+                </div>
+              </div>
+            );
+          },
           h1: ({ children, ...props }: MarkdownComponentProps) => {
             // Convert children to string safely for ID generation
             const headingText = Array.isArray(children) 
@@ -402,6 +539,28 @@ const MDXRenderer: React.FC<MDXRendererProps> = ({ content }) => {
       </ReactMarkdown>
     </div>
   );
+};
+
+// Helper function to get the appropriate icon class based on callout type
+const getIconClass = (type: string): string => {
+  switch (type) {
+    case 'note':
+      return 'bi bi-journal-text';
+    case 'info':
+      return 'bi bi-info-circle-fill';
+    case 'tip':
+      return 'bi bi-lightbulb-fill';
+    case 'warning':
+      return 'bi bi-exclamation-triangle-fill';
+    case 'caution':
+      return 'bi bi-shield-exclamation';
+    case 'error':
+      return 'bi bi-exclamation-circle-fill';
+    case 'success':
+      return 'bi bi-check-circle-fill';
+    default:
+      return 'bi bi-info-circle-fill';
+  }
 };
 
 export default MDXRenderer;

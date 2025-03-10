@@ -1,0 +1,75 @@
+/* Callout component styles */
+
+.callout {
+  margin: 1.5rem 0;
+  padding: 1rem;
+  border-radius: 0.25rem;
+  display: flex;
+  background-color: var(--callout-bg-color, rgba(13, 110, 253, 0.1));
+  border-left: 5px solid var(--callout-border-color, #0d6efd);
+  color: var(--callout-text-color, #084298);
+}
+
+.callout-icon {
+  margin-right: 1rem;
+  font-size: 1.25rem;
+  flex-shrink: 0;
+}
+
+.callout-content {
+  flex: 1;
+}
+
+.callout-title {
+  font-weight: bold;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.callout-body p:last-child {
+  margin-bottom: 0;
+}
+
+/* Default styles for each callout type */
+
+.callout-note {
+  --callout-bg-color: rgba(13, 110, 253, 0.1);
+  --callout-border-color: #0d6efd;
+  --callout-text-color: #084298;
+}
+
+.callout-info {
+  --callout-bg-color: rgba(13, 202, 240, 0.1);
+  --callout-border-color: #0dcaf0;
+  --callout-text-color: #055160;
+}
+
+.callout-tip {
+  --callout-bg-color: rgba(25, 135, 84, 0.1);
+  --callout-border-color: #198754;
+  --callout-text-color: #0a3622;
+}
+
+.callout-warning {
+  --callout-bg-color: rgba(255, 193, 7, 0.1);
+  --callout-border-color: #ffc107;
+  --callout-text-color: #664d03;
+}
+
+.callout-caution {
+  --callout-bg-color: rgba(253, 126, 20, 0.1);
+  --callout-border-color: #fd7e14;
+  --callout-text-color: #664d03;
+}
+
+.callout-error {
+  --callout-bg-color: rgba(220, 53, 69, 0.1);
+  --callout-border-color: #dc3545;
+  --callout-text-color: #842029;
+}
+
+.callout-success {
+  --callout-bg-color: rgba(25, 135, 84, 0.1);
+  --callout-border-color: #198754;
+  --callout-text-color: #0a3622;
+} 
