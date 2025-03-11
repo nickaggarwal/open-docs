@@ -314,6 +314,14 @@ const MDXRenderer: React.FC<MDXRendererProps> = ({ content }) => {
   
   return (
     <div className="mdx-content">
+      <style>
+        {`
+          .callout-body p {
+            margin-top: 0;
+            margin-bottom: 0;
+          }
+        `}
+      </style>
       <ReactMarkdown
         remarkPlugins={[remarkGfm]}
         components={{
@@ -322,8 +330,6 @@ const MDXRenderer: React.FC<MDXRendererProps> = ({ content }) => {
             // Default callout type and title
             let type = 'note';
             let title = 'Note';
-            
-            console.log("BLOCKQUOTE PROPS:", JSON.stringify(props, null, 2));
             
             // Try to extract the content as a string to detect callout type
             let contentStr = '';
@@ -358,8 +364,6 @@ const MDXRenderer: React.FC<MDXRendererProps> = ({ content }) => {
               }
             }
             
-            console.log("Extracted content:", contentStr);
-            
             // Detect callout type from content
             if (contentStr.toUpperCase().includes('NOTE:') || contentStr.toUpperCase().includes('**NOTE**')) {
               type = 'note';
@@ -383,8 +387,6 @@ const MDXRenderer: React.FC<MDXRendererProps> = ({ content }) => {
               type = 'success';
               title = 'Success';
             }
-            
-            console.log(`Detected callout type: ${type}, title: ${title}`);
             
             // Get the appropriate icon class for this callout type
             const iconClass = getIconClass(type);
@@ -422,19 +424,26 @@ const MDXRenderer: React.FC<MDXRendererProps> = ({ content }) => {
               <div 
                 role="note" 
                 className={`callout callout-${type}`} 
-                style={cssVariables}
+                style={{
+                  ...cssVariables,
+                  display: 'flex',
+                  alignItems: 'flex-start',
+                  gap: '0.75rem',
+                  padding: '1rem',
+                  borderRadius: '0.25rem',
+                  borderLeft: `4px solid var(--callout-border-color)`
+                }}
                 {...props}
               >
-                <div className="callout-icon">
-                  <i className={iconClass}></i>
-                </div>
-                <div className="callout-content">
-                  <div className="callout-title">
-                    {title}
-                  </div>
-                  <div className="callout-body">
-                    {children}
-                  </div>
+                <i className={iconClass} style={{ 
+                  flexShrink: 0, 
+                  marginTop: '0rem',
+                  color: 'var(--callout-border-color)'
+                }}></i>
+                <div className="callout-body" style={{
+                  // Simple styles for the callout body itself
+                }}>
+                  {children}
                 </div>
               </div>
             );
