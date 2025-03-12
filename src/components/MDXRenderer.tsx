@@ -21,6 +21,18 @@ const preprocessMDXContent = (mdxContent: string): string => {
   // Extract frontmatter
   let processedContent = mdxContent.replace(/^---\n([\s\S]*?)\n---\n/, '');
   
+  // Process image tags to add width and height directly to the markdown
+  // This converts ![alt](/path/to/image.jpg)<!-- width="300" --> to ![alt](/path/to/image.jpg#w=300)
+  processedContent = processedContent.replace(
+    /!\[(.*?)\]\((.*?)\)(?:\s*<!--\s*(?:width="(\d+)").*?-->)?/g,
+    (match, alt, src, width) => {
+      if (width) {
+        return `![${alt}](${src}#w=${width})`;
+      }
+      return match;
+    }
+  );
+  
   // Replace <Callout> components to preserve their type
   processedContent = processedContent.replace(
     /<Callout type="([^"]*)">\s*([\s\S]*?)\s*<\/Callout>/g,
@@ -65,7 +77,7 @@ const preprocessMDXContent = (mdxContent: string): string => {
     }
   );
   
-  // Process HTML image tags to convert them to markdown with special data attributes
+  // Revert to the original HTML image tag processing
   processedContent = processedContent.replace(
     /<img\s+([^>]*)>/g,
     (fullMatch, attributes) => {
@@ -82,6 +94,34 @@ const preprocessMDXContent = (mdxContent: string): string => {
       if (!srcMatch) return fullMatch; // If no src, leave as is
       
       let src = srcMatch[1];
+      let themeParam = '';
+      
+      // Add theme parameter based on attribute
+      if (isLightOnly) {
+        themeParam = 'theme=light';
+      } else if (isDarkOnly) {
+        themeParam = 'theme=dark';
+      }
+      
+      // Add width and height directly to the URL as hash parameters
+      let hashParams = [];
+      if (widthMatch) {
+        hashParams.push(`w=${widthMatch[1]}`);
+      }
+      if (heightMatch) {
+        hashParams.push(`h=${heightMatch[1]}`);
+      }
+      if (themeParam) {
+        hashParams.push(themeParam);
+      }
+      if (hasNoZoom) {
+        hashParams.push('no-zoom');
+      }
+      
+      // Add hash parameters if any
+      if (hashParams.length > 0) {
+        src += `#${hashParams.join('&')}`;
+      }
       
       let markdown = `![${altMatch?.[1] || titleMatch?.[1] || ''}](${src}`;
       
@@ -90,18 +130,6 @@ const preprocessMDXContent = (mdxContent: string): string => {
         markdown += ` "${titleMatch[1]}"`;
       }
       markdown += ')';
-      
-      // Add data attributes as HTML comments that we can parse later
-      const dataAttrs = [];
-      if (heightMatch) dataAttrs.push(`height="${heightMatch[1]}"`);
-      if (widthMatch) dataAttrs.push(`width="${widthMatch[1]}"`);
-      if (hasNoZoom) dataAttrs.push('noZoom="true"');
-      if (isLightOnly) dataAttrs.push('data-mode="light-only"');
-      if (isDarkOnly) dataAttrs.push('data-mode="dark-only"');
-      
-      if (dataAttrs.length > 0) {
-        markdown += `<!-- ${dataAttrs.join(' ')} -->`;
-      }
       
       return markdown;
     }
@@ -118,17 +146,17 @@ const preprocessMDXContent = (mdxContent: string): string => {
       const altMatch = imgAttributes.match(/alt="([^"]*)"/);
       const titleMatch = imgAttributes.match(/title="([^"]*)"/);
       const hasNoZoom = imgAttributes.includes('noZoom');
-      const isLightOnly = imgAttributes.includes('light-only') || imgAttributes.includes('data-light-only');
-      const isDarkOnly = imgAttributes.includes('dark-only') || imgAttributes.includes('data-dark-only');
       
       if (!srcMatch) return fullMatch; // If no src, leave as is
       
       let src = srcMatch[1];
-      // Append mode markers to src if needed
-      if (isLightOnly) {
-        src += '#light-only';
-      } else if (isDarkOnly) {
-        src += '#dark-only';
+      
+      // Add width and height directly to the URL as hash parameters
+      if (widthMatch) {
+        src += `#w=${widthMatch[1]}`;
+      }
+      if (heightMatch) {
+        src += src.includes('#') ? `,h=${heightMatch[1]}` : `#h=${heightMatch[1]}`;
       }
       
       // For linked images, create a special markdown format
@@ -140,14 +168,8 @@ const preprocessMDXContent = (mdxContent: string): string => {
       }
       markdown += `)](${href})`;
       
-      // Add data attributes as HTML comments that we can parse later
-      const dataAttrs = [];
-      if (heightMatch) dataAttrs.push(`height="${heightMatch[1]}"`);
-      if (widthMatch) dataAttrs.push(`width="${widthMatch[1]}"`);
-      if (hasNoZoom) dataAttrs.push('noZoom="true"');
-      
-      if (dataAttrs.length > 0) {
-        markdown += `<!-- ${dataAttrs.join(' ')} -->`;
+      if (hasNoZoom) {
+        markdown = markdown.replace(/\)\]\(/, '#no-zoom)](');
       }
       
       return markdown;
@@ -160,7 +182,8 @@ const preprocessMDXContent = (mdxContent: string): string => {
   processedContent = processedContent.replace(/export\s+const\s+.*?=/g, 'const _removed_=');
   processedContent = processedContent.replace(/export\s+function\s+.*?[\s(]/g, 'function _removed_$1');
   
-  // console.log("Preprocessed content:", processedContent.substring(0, 200) + "...");
+  // Remove the debug output
+  // console.log("Final processed content snippet:", processedContent.substring(0, 500));
   return processedContent;
 };
 
@@ -184,6 +207,7 @@ interface ImageProps extends MarkdownComponentProps {
   className?: string;
   height?: string | number;
   width?: string | number;
+  'data-mode'?: string;
 }
 
 /**
@@ -197,7 +221,9 @@ const ImageComponent: React.FC<ImageProps> = ({ src, alt, title, noZoom, classNa
   // Listen for theme changes
   useEffect(() => {
     const handleThemeChange = () => {
-      setCurrentTheme(document.documentElement.getAttribute('data-theme') || 'light');
+      const newTheme = document.documentElement.getAttribute('data-theme') || 'light';
+      setCurrentTheme(newTheme);
+      console.log("Theme changed to:", newTheme);
     };
     
     // Create a MutationObserver to watch for attribute changes on the html element
@@ -212,6 +238,9 @@ const ImageComponent: React.FC<ImageProps> = ({ src, alt, title, noZoom, classNa
     // Start observing
     observer.observe(document.documentElement, { attributes: true });
     
+    // Initial theme check
+    handleThemeChange();
+    
     // Clean up
     return () => {
       observer.disconnect();
@@ -221,20 +250,80 @@ const ImageComponent: React.FC<ImageProps> = ({ src, alt, title, noZoom, classNa
   // Determine if we're in dark mode
   const isDarkMode = currentTheme === 'dark';
   
-  // Check if this is a dark/light mode specific image
-  const modeFromHash = src?.includes('#light-only') ? 'light-only' : src?.includes('#dark-only') ? 'dark-only' : null;
-  const modeFromClass = className?.includes('light-only') ? 'light-only' : className?.includes('dark-only') ? 'dark-only' : null;
-  const modeFromAttr = dataMode; // From the data-mode attribute
+  // Check theme from hash parameter for theme-specific images
+  // Look for #theme=light or #theme=dark or &theme=light or &theme=dark in the src URL
+  let themeFromHash = null;
+  if (src) {
+    // First try exact parameter match
+    if (src.includes('#theme=light') || src.includes('&theme=light')) {
+      themeFromHash = 'light';
+    } else if (src.includes('#theme=dark') || src.includes('&theme=dark')) {
+      themeFromHash = 'dark';
+    }
+    
+    // If not found, try regex for more complex cases
+    if (!themeFromHash) {
+      const themeMatch = src.match(/[#&]theme=(light|dark)(?:&|$)/);
+      if (themeMatch) {
+        themeFromHash = themeMatch[1];
+      }
+    }
+  }
   
-  const imageMode = modeFromAttr || modeFromHash || modeFromClass || null;
+  // Check all other potential theme indicators as fallbacks
+  const modeFromClass = className?.includes('light-only') ? 'light' : 
+                       className?.includes('dark-only') ? 'dark' : null;
+                       
+  // Check parent node classes and properties for backward compatibility
+  const parentNode = rest.node?.parentNode;
+  const parentClass = parentNode?.properties?.className || '';
+  const parentLightClass = typeof parentClass === 'string' ? parentClass.includes('light-only') : 
+                          Array.isArray(parentClass) ? parentClass.includes('light-only') : false;
+  const parentDarkClass = typeof parentClass === 'string' ? parentClass.includes('dark-only') : 
+                         Array.isArray(parentClass) ? parentClass.includes('dark-only') : false;
+  const modeFromParent = parentLightClass ? 'light' : parentDarkClass ? 'dark' : null;
   
-  // If this is a mode-specific image and doesn't match current mode, don't render
-  if ((imageMode === 'light-only' && isDarkMode) || (imageMode === 'dark-only' && !isDarkMode)) {
+  // Check data attributes for backward compatibility
+  const modeFromAttr = dataMode === 'light-only' ? 'light' : 
+                      dataMode === 'dark-only' ? 'dark' : 
+                      rest['light-only'] ? 'light' : 
+                      rest['dark-only'] ? 'dark' : null;
+  
+  // Final theme determination with priority order:
+  // 1. Hash parameter (#theme=)
+  // 2. Data attribute
+  // 3. Class name
+  // 4. Parent class
+  const imageTheme = themeFromHash || modeFromAttr || modeFromClass || modeFromParent;
+
+  console.log("Image theme detection:", {
+    src,
+    themeFromHash,
+    modeFromClass,
+    modeFromParent,
+    modeFromAttr,
+    finalTheme: imageTheme,
+    currentTheme,
+    isDarkMode
+  });
+  
+  // If this is a theme-specific image and doesn't match current theme, don't render
+  const shouldRender = !imageTheme || 
+                      (imageTheme === 'light' && !isDarkMode) || 
+                      (imageTheme === 'dark' && isDarkMode);
+  
+  if (!shouldRender) {
+    console.log("Not rendering image due to theme mismatch:", src);
     return null;
   }
   
-  // Clean up the src URL by removing mode-specific tags
-  const cleanSrc = src?.replace(/#(light|dark)-only/g, '') || '';
+  // Clean up the src URL by removing theme parameters
+  const cleanSrc = src?.replace(/[#&]theme=(light|dark)(&|$)/g, (match, theme, endChar) => {
+    return endChar === '&' ? '&' : '';
+  }).replace(/^([^#]*)[#]&/, '$1#').replace(/[#]$/, '') || '';
+  
+  // Build a class that includes original class
+  const enhancedClassName = `${className || ''} img-fluid`;
   
   const handleOpen = () => {
     if (!noZoom) {
@@ -252,15 +341,16 @@ const ImageComponent: React.FC<ImageProps> = ({ src, alt, title, noZoom, classNa
         src={cleanSrc}
         alt={alt || title || 'Image'}
         title={title || alt}
-        className={`${className || ''} img-fluid`}
+        className={enhancedClassName}
+        width={width}
+        height={height}
         style={{ 
-          height: height ? `${height}px` : 'auto',
-          width: width ? `${width}px` : 'auto',
           cursor: noZoom ? 'default' : 'zoom-in',
           maxWidth: '100%',
           borderRadius: '4px'
         }}
         onClick={handleOpen}
+        data-theme={imageTheme}
         {...(noZoom && { 'data-no-zoom': 'true' })}
         {...rest}
       />
@@ -319,6 +409,33 @@ const MDXRenderer: React.FC<MDXRendererProps> = ({ content }) => {
           .callout-body p {
             margin-top: 0;
             margin-bottom: 0;
+          }
+
+          /* Theme-specific image styling */
+          html[data-theme="dark"] .light-only {
+            display: none;
+          }
+          
+          html[data-theme="light"] .dark-only {
+            display: none;
+          }
+          
+          [light-only] {
+            display: var(--light-only-display, block);
+          }
+          
+          [dark-only] {
+            display: var(--dark-only-display, block);
+          }
+          
+          html[data-theme="dark"] {
+            --light-only-display: none;
+            --dark-only-display: block;
+          }
+          
+          html[data-theme="light"] {
+            --light-only-display: block;
+            --dark-only-display: none;
           }
         `}
       </style>
@@ -507,25 +624,35 @@ const MDXRenderer: React.FC<MDXRendererProps> = ({ content }) => {
             );
           },
           img: ({ src, alt, title, className, ...rest }: ImageProps) => {
-            // Extract custom attributes from HTML comments if available
+            // Extract custom attributes from URL hash parameters
             let noZoom = false;
             let height = undefined;
             let width = undefined;
             let dataMode = undefined;
             
-            // Check for HTML comment with data attributes
-            const commentMatch = rest.node?.position?.end?.column && rest.node?.children?.[0]?.value;
-            if (commentMatch && typeof commentMatch === 'string') {
-              // Extract attributes from HTML comment
-              const heightMatch = commentMatch.match(/height="([^"]*)"/);
-              const widthMatch = commentMatch.match(/width="([^"]*)"/);
-              const noZoomMatch = commentMatch.match(/noZoom="true"/);
-              const dataModeMatch = commentMatch.match(/data-mode="([^"]*)"/);
+            // Extract parameters from the URL hash
+            if (src && src.includes('#')) {
+              // Keep the original src for theme detection
+              // But extract other parameters for the component
               
-              if (heightMatch) height = heightMatch[1];
-              if (widthMatch) width = widthMatch[1];
-              if (noZoomMatch) noZoom = true;
-              if (dataModeMatch) dataMode = dataModeMatch[1];
+              // Parse hash parameters
+              const hashParts = src.split('#')[1].split('&');
+              for (const part of hashParts) {
+                if (part.startsWith('w=')) {
+                  width = part.substring(2);
+                } else if (part.startsWith('h=')) {
+                  height = part.substring(2);
+                } else if (part === 'no-zoom') {
+                  noZoom = true;
+                } else if (part.startsWith('theme=')) {
+                  const theme = part.substring(6);
+                  if (theme === 'light') {
+                    dataMode = 'light-only';
+                  } else if (theme === 'dark') {
+                    dataMode = 'dark-only';
+                  }
+                }
+              }
             }
             
             return (
@@ -540,6 +667,13 @@ const MDXRenderer: React.FC<MDXRendererProps> = ({ content }) => {
                 data-mode={dataMode}
                 {...rest} 
               />
+            );
+          },
+          span: ({ className, children, ...props }: MarkdownComponentProps) => {
+            return (
+              <span className={className} {...props}>
+                {children}
+              </span>
             );
           }
         }}
