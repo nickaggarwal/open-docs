@@ -1,0 +1,250 @@
+---
+title: Markdown Feature 
+description: Learn how to format text and use headers effectively in your Open Docs documentation
+lastUpdated: March 10, 2024
+category: Guides
+---
+
+
+## Headers
+
+Headers help structure your content and create a clear hierarchy. Open Docs supports 6 levels of headers:
+
+```md
+# H1 - Main title of the page
+## H2 - Major sections
+### H3 - Subsections
+#### H4 - Smaller subsections
+##### H5 - Minor points
+###### H6 - Fine details
+```
+
+### Best Practices for Headers
+
+- Use only one H1 (`#`) per page
+- Maintain a logical hierarchy (don't skip levels)
+- Keep headers concise and descriptive
+- Use sentence case (capitalize only the first word)
+
+## Text Formatting
+
+### Bold, Italic, and Strikethrough
+
+Open Docs supports common text formatting options:
+
+```md
+**Bold text** is used for emphasis
+*Italic text* is used for slight emphasis or introducing terms
+~~Strikethrough~~ is used to show removed or deprecated content
+```
+
+Which renders as:
+
+**Bold text** is used for emphasis  
+*Italic text* is used for slight emphasis or introducing terms  
+~~Strikethrough~~ is used to show removed or deprecated content
+
+### Combining Formatting
+
+You can combine different text formatting styles:
+
+```md
+***Bold and italic***
+**Bold with *italic* inside**
+```
+
+Which renders as:
+
+***Bold and italic***  
+**Bold with *italic* inside**
+
+## Links
+
+### Internal Links
+
+Link to other pages in your documentation using relative paths:
+
+```md
+[Installation Guide](/getting-started/installation)
+[Learn about configuration](/getting-started/configuration)
+```
+
+### External Links
+
+Link to external resources by providing the full URL:
+
+```md
+[Open Docs GitHub Repository](https://github.com/yourusername/open-docs)
+[Learn about MDX](https://mdxjs.com/)
+```
+
+### Section Links
+
+Link to specific sections within a page using anchor links:
+
+```md
+[Jump to Text Formatting](#text-formatting)
+```
+
+## Blockquotes
+
+Blockquotes are useful for highlighting important information, quotes, or callouts:
+
+```md
+> This is a blockquote. It's great for emphasizing important information.
+```
+
+Which renders as:
+
+> This is a blockquote. It's great for emphasizing important information.
+
+### Multi-line Blockquotes
+
+```md
+> This is a multi-line blockquote.
+>
+> It can contain multiple paragraphs, lists, and other markdown elements.
+>
+> - Item one
+> - Item two
+```
+
+Which renders as:
+
+> This is a multi-line blockquote.
+>
+> It can contain multiple paragraphs, lists, and other markdown elements.
+>
+> - Item one
+> - Item two
+
+
+
+## Lists
+
+### Unordered Lists
+
+```md
+- First item
+- Second item
+- Third item
+  - Nested item 1
+  - Nested item 2
+```
+
+Which renders as:
+
+- First item
+- Second item
+- Third item
+  - Nested item 1
+  - Nested item 2
+
+### Ordered Lists
+
+```md
+1. First step
+2. Second step
+3. Third step
+   1. Nested step 1
+   2. Nested step 2
+```
+
+Which renders as:
+
+1. First step
+2. Second step
+3. Third step
+   1. Nested step 1
+   2. Nested step 2
+
+## Horizontal Rules
+
+Use three hyphens to create a horizontal divider:
+
+```md
+---
+```
+
+Which creates a line like this:
+
+---
+
+## Callout Components
+
+This guide demonstrates the various callout components available in Open Docs. Callouts are used to draw attention to important information, warnings, tips, and other notes to the reader.
+
+
+### Note Callout
+
+<Note>
+  This is a simple note with useful information.
+</Note>
+
+### Info Callout
+
+<Info>
+  This provides additional context or background information.
+</Info>
+
+### Tip Callout
+
+<Tip>
+  This is a helpful tip to improve your workflow.
+</Tip>
+
+### Warning Callout
+
+<Warning>
+  This is a warning that requires your attention.
+</Warning>
+
+### Caution Callout
+
+<Caution>
+  This highlights potential issues you should be careful about.
+</Caution>
+
+## Callouts with Formatting
+
+<Note>
+  **Formatted Note**: Here's a note with some **bold text** and `inline code`.
+</Note>
+
+<Warning>
+  **Important Warning**: This warning has a [link to more information](#).
+</Warning>
+
+## Using the Callout Component Directly
+
+<Callout type="success">
+  This is a success message!
+</Callout>
+
+<Callout type="error">
+  This is an error message.
+</Callout>
+
+## Using Callouts in Your Documentation
+
+Callouts can be used anywhere in your MDX content like this:
+
+
+## Styling Guidelines
+
+- Use callouts sparingly to avoid overwhelming the reader
+- Choose the appropriate callout type for your message
+- Keep callout content concise and directly relevant
+- Use formatting (bold, code blocks, etc.) within callouts for better readability
+
+## When to Use Callouts
+
+- **Notes**: Use for general information that supplements the main content
+- **Tips**: Use for best practices and optimization advice
+- **Info**: Use for background or contextual information
+- **Warnings**: Use when failing to follow directions might cause problems
+- **Caution**: Use to highlight potential pitfalls or edge cases
+
+## Styling Callouts
+
+Callouts use Bootstrap styling with appropriate icons for each type of message, making them visually distinct and easy to identify. 

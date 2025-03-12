@@ -1,107 +1,120 @@
 ---
-title: Image Embeds
-description: Learn how to embed and format images in your documentation
+title: 'Image Embeds'
+description: 'Learn how to add and customize images in your Open Docs documentation'
 ---
 
-# Image Embeds
-
-You can embed images in your markdown files using standard markdown syntax.
 
 ## Basic Image Embedding
 
-The basic syntax for embedding an image is:
-
-```
-![Alt text for the image](/images/landscape.jpg#theme=light "Hover title for the image")
-![Alt text for the image](/images/landscape.jpg#theme=dark "Hover title for the image")
-```
-
-This will render as:
-
-![Alt text for the image](/images/landscape-light.jpg#theme=light "Hover title for the image")
-![Alt text for the image](/images/landscape-dark.jpg#theme=dark "Hover title for the image")
-
-## Image Sizing
-
-You can control the size of images by using HTML attributes, inline styles, or hash parameters.
-
-### Using HTML Attributes
-
-```html
-<img src="/images/landscape-light.jpg#theme=light" width="300" alt="Landscape image" />
-<img src="/images/landscape-dark.jpg#theme=dark" width="300" alt="Landscape image" />
-```
-
-<img src="/images/landscape-light.jpg#theme=light" width="300" alt="Landscape image" />
-<img src="/images/landscape-dark.jpg#theme=dark" width="300" alt="Landscape image" />
-
-### Using Inline Styles
-
-```html
-<img src="/images/landscape-light.jpg#theme=light" style="width: 50%" alt="Landscape image" />
-<img src="/images/landscape-dark.jpg#theme=dark" style="width: 50%" alt="Landscape image" />
-```
-
-<img src="/images/landscape-light.jpg#theme=light" style="width: 50%" alt="Landscape image" />
-<img src="/images/landscape-dark.jpg#theme=dark" style="width: 50%" alt="Landscape image" />
-
-### Using Hash Parameters for Width
-
-You can also specify the width using hash parameters in the URL:
-
-```
-![Alt text](/images/landscape-light.jpg#w=300&theme=light)
-![Alt text](/images/landscape-dark.jpg#w=300&theme=dark)
-```
-
-![Alt text](/images/landscape-light.jpg#w=300&theme=light)
-![Alt text](/images/landscape-dark.jpg#w=300&theme=dark)
-
-## Linked Images
-
-You can make images clickable by wrapping them in a link:
+To add an image to your documentation, use the standard Markdown syntax:
 
 ```md
-[![Landscape image](/images/landscape-light.jpg#theme=light)](/images/landscape-light.jpg)
-[![Landscape image](/images/landscape-dark.jpg#theme=dark)](/images/landscape-dark.jpg)
+![Alt text](path/to/image.png)
 ```
 
-[![Landscape image](/images/landscape-light.jpg#theme=light)](/images/landscape-light.jpg)
-[![Landscape image](/images/landscape-dark.jpg#theme=dark)](/images/landscape-dark.jpg)
+You can also add a title to provide additional information when users hover over the image:
 
-## Captions with Figure
+```md
+![Alt text](path/to/image.png "Image title on hover")
+```
 
-To add a caption to an image, you can use the `<figure>` and `<figcaption>` elements:
+Example:
 
-```html
+![Landscape image](/images/landscape-light.jpg#theme=light "Light mode landscape")
+![Landscape image](/images/landscape-dark.jpg#theme=dark "Dark mode landscape")
+
+### Image Sizing
+
+You can control the size of images using HTML attributes:
+
+```md
+<img src="path/to/image.png" width="500" height="300" alt="Sized image" />
+```
+
+Example:
+
+<img src="/images/landscape-light.jpg#w=500&h=300" alt="Sized image" />
+
+Or for more control, you can use inline styles:
+
+```md
+<img src="path/to/image.png" style="width: 500px;" alt="Styled image" />
+```
+
+## Theme-Specific Images
+
+You can display different images based on the user's current theme (light or dark mode). This is especially useful for diagrams or screenshots that need different versions for each theme.
+
+### Using Hash Parameters
+
+The simplest way to create theme-specific images is by adding the `theme` parameter to the image URL:
+
+```md
+![Alt text](/images/landscape-light.jpg#theme=light "Light mode version")
+![Alt text](/images/landscape-dark.jpg#theme=dark "Dark mode version")
+```
+
+You can also combine this with other parameters:
+
+```md
+![Alt text](/images/landscape-light.jpg#w=400&theme=light "Light mode version")
+![Alt text](/images/landscape-dark.jpg#w=400&theme=dark "Dark mode version")
+```
+
+### Example Implementation
+
+Here's how the image pair renders (try switching your theme to see the difference):
+
+![Example landscape](/images/landscape-light.jpg#w=500&theme=light "Light mode landscape")
+![Example landscape](/images/landscape-dark.jpg#w=500&theme=dark "Dark mode landscape")
+
+
+
+## Image Captions
+
+You can add captions to images by wrapping them in a figure element:
+
+```md
 <figure>
-  <img src="/images/landscape-light.jpg#theme=light" alt="Landscape" width="500" />
-  <img src="/images/landscape-dark.jpg#theme=dark" alt="Landscape" width="500" />
-  <figcaption>Fig.1 - A beautiful landscape view (adapts to light/dark mode)</figcaption>
+  <img src="path/to/image.png" alt="Image with caption" />
+  <figcaption>This is a caption for the image above</figcaption>
 </figure>
 ```
 
+Example:
+
 <figure>
-  <img src="/images/landscape-light.jpg#theme=light" alt="Landscape" width="500" />
-  <img src="/images/landscape-dark.jpg#theme=dark" alt="Landscape" width="500" />
-  <figcaption>Fig.1 - A beautiful landscape view (adapts to light/dark mode)</figcaption>
+  <img src="/images/landscape-light.jpg#theme=light" width="500" alt="Landscape with caption" />
+  <img src="/images/landscape-dark.jpg#theme=dark" width="500" alt="Landscape with caption" />
+  <figcaption>Fig.1 - A beautiful landscape view that adapts to your theme</figcaption>
 </figure>
 
-## Using Theme-Specific Images
+## Clickable Images
 
-You can display different images based on the user's theme (light or dark mode) by using hash parameters:
+To make an image clickable (linking to a larger version or another page), use the following syntax:
 
-1. Add `#theme=light` to the image URL to show it only in light mode
-2. Add `#theme=dark` to the image URL to show it only in dark mode
+```md
+[![Alt text](path/to/thumbnail.png)](path/to/full-image.png)
+```
 
-You can combine multiple parameters like `#w=300&theme=light` for both sizing and theme-specific display.
+Example:
 
-Try switching your theme to see the difference.
+[![Landscape thumbnail](/images/landscape-light.jpg#w=300&theme=light)](/images/landscape-light.jpg)
+[![Landscape thumbnail](/images/landscape-dark.jpg#w=300&theme=dark)](/images/landscape-dark.jpg)
 
-## Best Practices
+Or with HTML for more control:
 
-1. **Always include alt text** for accessibility
-2. **Optimize images** before uploading (compress, resize)
-3. **Use responsive sizes** when possible
-4. **Be consistent** with image styling throughout your documentation
-5. **Consider theme-specific images** for better contrast in light and dark modes
+```md
+<a href="path/to/full-image.png" target="_blank">
+  <img src="path/to/thumbnail.png" alt="Clickable image" />
+</a>
+```
+
+
+### Best Practices for Images
+
+- Create separate optimized versions for light and dark themes
+- Ensure both images have the same dimensions to prevent layout shifts
+- Use appropriate contrast in each theme version
+- Test how images look when the user switches themes
+- Always include alt text for accessibility

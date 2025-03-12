@@ -1,13 +1,10 @@
 ---
-title: Headers and Text Formatting
+title: Markdown Feature 
 description: Learn how to format text and use headers effectively in your Open Docs documentation
 lastUpdated: March 10, 2024
 category: Guides
 ---
 
-# Headers and Text Formatting
-
-This guide covers how to effectively use headers and format text in your Open Docs documentation for maximum readability and engagement.
 
 ## Headers
 
@@ -121,60 +118,7 @@ Which renders as:
 > - Item one
 > - Item two
 
-## Callouts and Admonitions
 
-Open Docs supports special callout blocks for different types of information:
-
-```md
-<Note>
-  This is a note with useful information.
-</Note>
-
-<Warning>
-  This is a warning that requires attention.
-</Warning>
-
-<Tip>
-  This is a helpful tip to improve your workflow.
-</Tip>
-
-<Info>
-  This provides additional context or background information.
-</Info>
-
-<Caution>
-  This highlights potential issues or pitfalls.
-</Caution>
-```
-
-## Line Breaks
-
-To create a line break without starting a new paragraph, end a line with two spaces:
-
-```md
-This is the first line.  
-This is the second line.
-```
-
-To create a new paragraph, leave an empty line between text blocks:
-
-```md
-This is the first paragraph.
-
-This is the second paragraph.
-```
-
-## Code Inline
-
-For inline code references, use backticks:
-
-```md
-Use the `<Navigation />` component to add a sidebar.
-```
-
-Which renders as:
-
-Use the `<Navigation />` component to add a sidebar.
 
 ## Lists
 
@@ -226,10 +170,81 @@ Which creates a line like this:
 
 ---
 
-## Tips for Effective Text Usage
+## Callout Components
 
-1. **Be concise**: Keep paragraphs and sentences short and focused
-2. **Use active voice**: It makes your content more engaging and direct
-3. **Balance formatting**: Don't overuse bold, italic, or other formatting
-4. **Maintain consistency**: Use the same style for similar elements throughout your docs
-5. **Consider readability**: Break up large text blocks with headers, lists, and images 
+This guide demonstrates the various callout components available in Open Docs. Callouts are used to draw attention to important information, warnings, tips, and other notes to the reader.
+
+
+### Note Callout
+
+<Note>
+  This is a simple note with useful information.
+</Note>
+
+### Info Callout
+
+<Info>
+  This provides additional context or background information.
+</Info>
+
+### Tip Callout
+
+<Tip>
+  This is a helpful tip to improve your workflow.
+</Tip>
+
+### Warning Callout
+
+<Warning>
+  This is a warning that requires your attention.
+</Warning>
+
+### Caution Callout
+
+<Caution>
+  This highlights potential issues you should be careful about.
+</Caution>
+
+## Callouts with Formatting
+
+<Note>
+  **Formatted Note**: Here's a note with some **bold text** and `inline code`.
+</Note>
+
+<Warning>
+  **Important Warning**: This warning has a [link to more information](#).
+</Warning>
+
+## Using the Callout Component Directly
+
+<Callout type="success">
+  This is a success message!
+</Callout>
+
+<Callout type="error">
+  This is an error message.
+</Callout>
+
+## Using Callouts in Your Documentation
+
+Callouts can be used anywhere in your MDX content like this:
+
+
+## Styling Guidelines
+
+- Use callouts sparingly to avoid overwhelming the reader
+- Choose the appropriate callout type for your message
+- Keep callout content concise and directly relevant
+- Use formatting (bold, code blocks, etc.) within callouts for better readability
+
+## When to Use Callouts
+
+- **Notes**: Use for general information that supplements the main content
+- **Tips**: Use for best practices and optimization advice
+- **Info**: Use for background or contextual information
+- **Warnings**: Use when failing to follow directions might cause problems
+- **Caution**: Use to highlight potential pitfalls or edge cases
+
+## Styling Callouts
+
+Callouts use Bootstrap styling with appropriate icons for each type of message, making them visually distinct and easy to identify. 

@@ -3,9 +3,6 @@ title: 'Image Embeds'
 description: 'Learn how to add and customize images in your Open Docs documentation'
 ---
 
-# Image Embeds
-
-Images are a powerful way to enhance your documentation with visual information. Open Docs provides several ways to embed and customize images.
 
 ## Basic Image Embedding
 
@@ -21,7 +18,12 @@ You can also add a title to provide additional information when users hover over
 ![Alt text](path/to/image.png "Image title on hover")
 ```
 
-## Image Sizing
+Example:
+
+![Landscape image](/images/landscape-light.jpg#theme=light "Light mode landscape")
+![Landscape image](/images/landscape-dark.jpg#theme=dark "Dark mode landscape")
+
+### Image Sizing
 
 You can control the size of images using HTML attributes:
 
@@ -29,75 +31,45 @@ You can control the size of images using HTML attributes:
 <img src="path/to/image.png" width="500" height="300" alt="Sized image" />
 ```
 
+Example:
+
+<img src="/images/landscape-light.jpg#w=500&h=300" alt="Sized image" />
+
 Or for more control, you can use inline styles:
 
 ```md
-<img src="path/to/image.png" style="width: 50%; max-width: 500px;" alt="Styled image" />
+<img src="path/to/image.png" style="width: 500px;" alt="Styled image" />
 ```
-
-## Image Alignment
-
-You can align images using HTML and CSS:
-
-### Center Alignment
-
-```md
-<div style="text-align: center;">
-  <img src="path/to/image.png" alt="Centered image" />
-</div>
-```
-
-### Right Alignment
-
-```md
-<div style="text-align: right;">
-  <img src="path/to/image.png" alt="Right-aligned image" />
-</div>
-```
-
-## Responsive Images
-
-All images in Open Docs are responsive by default using the `img-fluid` class. This ensures that images never exceed the width of their container and maintain their aspect ratio.
 
 ## Theme-Specific Images
 
 You can display different images based on the user's current theme (light or dark mode). This is especially useful for diagrams or screenshots that need different versions for each theme.
 
-### Using HTML Attributes
+### Using Hash Parameters
 
-The simplest way to create theme-specific images is to use the `light-only` or `dark-only` attributes on your image tags:
+The simplest way to create theme-specific images is by adding the `theme` parameter to the image URL:
 
-```html
-<!-- This image will only show in light mode -->
-<img src="/images/diagram-light.png" alt="Light mode diagram" light-only />
+```md
+![Alt text](/images/landscape-light.jpg#theme=light "Light mode version")
+![Alt text](/images/landscape-dark.jpg#theme=dark "Dark mode version")
+```
 
-<!-- This image will only show in dark mode -->
-<img src="/images/diagram-dark.png" alt="Dark mode diagram" dark-only />
+You can also combine this with other parameters:
+
+```md
+![Alt text](/images/landscape-light.jpg#w=400&theme=light "Light mode version")
+![Alt text](/images/landscape-dark.jpg#w=400&theme=dark "Dark mode version")
 ```
 
 ### Example Implementation
 
-A common pattern is to place light and dark mode images in the same position:
+Here's how the image pair renders (try switching your theme to see the difference):
 
-```html
-<div style="position: relative;">
-  <!-- Light mode image -->
-  <img src="/images/chart-light.png" alt="Data visualization" light-only />
-  
-  <!-- Dark mode image (same position) -->
-  <img src="/images/chart-dark.png" alt="Data visualization" dark-only />
-</div>
-```
+![Example landscape](/images/landscape-light.jpg#w=500&theme=light "Light mode landscape")
+![Example landscape](/images/landscape-dark.jpg#w=500&theme=dark "Dark mode landscape")
 
-This technique ensures only the appropriate image for the current theme is shown, while maintaining the same layout regardless of which theme is active.
 
-### Best Practices for Theme-Specific Images
 
-- Create separate optimized versions for light and dark themes
-- Ensure both images have the same dimensions to prevent layout shifts
-- Use appropriate contrast in each theme version
-- Test how images look when the user switches themes
-- Always include alt text for accessibility
 
 ## Image Captions
 
@@ -110,6 +82,14 @@ You can add captions to images by wrapping them in a figure element:
 </figure>
 ```
 
+Example:
+
+<figure>
+  <img src="/images/landscape-light.jpg#theme=light" width="500" alt="Landscape with caption" />
+  <img src="/images/landscape-dark.jpg#theme=dark" width="500" alt="Landscape with caption" />
+  <figcaption>Fig.1 - A beautiful landscape view that adapts to your theme</figcaption>
+</figure>
+
 ## Clickable Images
 
 To make an image clickable (linking to a larger version or another page), use the following syntax:
@@ -117,6 +97,11 @@ To make an image clickable (linking to a larger version or another page), use th
 ```md
 [![Alt text](path/to/thumbnail.png)](path/to/full-image.png)
 ```
+
+Example:
+
+[![Landscape thumbnail](/images/landscape-light.jpg#w=300&theme=light)](/images/landscape-light.jpg)
+[![Landscape thumbnail](/images/landscape-dark.jpg#w=300&theme=dark)](/images/landscape-dark.jpg)
 
 Or with HTML for more control:
 
@@ -126,26 +111,10 @@ Or with HTML for more control:
 </a>
 ```
 
-## Image Galleries
+### Best Practices for Images
 
-For multiple related images, you can create a simple gallery using a grid layout:
-
-```md
-<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 1rem;">
-  <img src="path/to/image1.png" alt="Gallery image 1" />
-  <img src="path/to/image2.png" alt="Gallery image 2" />
-  <img src="path/to/image3.png" alt="Gallery image 3" />
-  <img src="path/to/image4.png" alt="Gallery image 4" />
-</div>
-```
-
-## Best Practices
-
-- Use appropriate file formats (PNG for screenshots/diagrams, JPG for photos, SVG for icons/logos)
-- Optimize images for web to reduce file size
-- Always include meaningful alt text for accessibility
-- Consider using SVG for diagrams when possible for better scaling
-- Use consistent sizing for similar types of images
-- Provide dark-mode alternates for diagrams with light backgrounds
-
-By following these guidelines, you can effectively enhance your documentation with images that improve understanding and engagement.
+- Create separate optimized versions for light and dark themes
+- Ensure both images have the same dimensions to prevent layout shifts
+- Use appropriate contrast in each theme version
+- Test how images look when the user switches themes
+- Always include alt text for accessibility
