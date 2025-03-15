@@ -21,7 +21,7 @@ export const CodeBlock: React.FC<CodeBlockProps> = ({ language, children, filena
     document.documentElement.getAttribute('data-theme') === 'dark'
   );
   
-  // Clean up the code
+  // Just trim the code - don't apply any sanitization to preserve MDX syntax exactly as written
   const code = children.trim();
   
   // Detect language display name

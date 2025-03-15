@@ -21,6 +21,13 @@ const preprocessMDXContent = (mdxContent: string): string => {
   // Extract frontmatter
   let processedContent = mdxContent.replace(/^---\n([\s\S]*?)\n---\n/, '');
   
+  // First, identify and protect code blocks from processing
+  const codeBlocks: string[] = [];
+  processedContent = processedContent.replace(/```[\s\S]*?```/g, (match) => {
+    codeBlocks.push(match);
+    return `___CODE_BLOCK_${codeBlocks.length - 1}___`;
+  });
+  
   // Process image tags to add width and height directly to the markdown
   // This converts ![alt](/path/to/image.jpg)<!-- width="300" --> to ![alt](/path/to/image.jpg#w=300)
   processedContent = processedContent.replace(
@@ -181,6 +188,11 @@ const preprocessMDXContent = (mdxContent: string): string => {
   processedContent = processedContent.replace(/export\s+default\s+.*?[;{]/g, '');
   processedContent = processedContent.replace(/export\s+const\s+.*?=/g, 'const _removed_=');
   processedContent = processedContent.replace(/export\s+function\s+.*?[\s(]/g, 'function _removed_$1');
+  
+  // Finally, restore code blocks
+  processedContent = processedContent.replace(/___CODE_BLOCK_(\d+)___/g, (_, index) => {
+    return codeBlocks[parseInt(index)];
+  });
   
   // Remove the debug output
   // console.log("Final processed content snippet:", processedContent.substring(0, 500));
@@ -601,8 +613,14 @@ const MDXRenderer: React.FC<MDXRendererProps> = ({ content }) => {
               </h2>
             );
           },
+          pre: ({ children, ...props }: MarkdownComponentProps) => {
+            // Pass pre content directly to maintain MDX syntax in code blocks
+            return <div {...props}>{children}</div>;
+          },
           code: ({ inline, className, children, ...props }: CodeBlockProps) => {
             const match = /language-(\w+)/.exec(className || '');
+            // Don't preprocess - keep raw content exactly as written
+            const codeContent = String(children).replace(/\n$/, '');
             
             if (!inline && match) {
               // Check if there's a filename in the language (format: language:filename)
@@ -611,14 +629,28 @@ const MDXRenderer: React.FC<MDXRendererProps> = ({ content }) => {
               const filename = languageParts.length > 1 ? languageParts[1] : undefined;
               
               return (
-                <CodeBlock language={language} filename={filename}>
-                  {String(children).replace(/\n$/, '')}
+                <CodeBlock 
+                  language={language} 
+                  filename={filename}
+                >
+                  {codeContent}
                 </CodeBlock>
               );
             } 
             
             return (
-              <code className={className} {...props}>
+              <code 
+                className={className} 
+                style={{
+                  backgroundColor: 'rgba(0, 0, 0, 0.05)',
+                  padding: '0.2em 0.4em',
+                  borderRadius: '3px',
+                  fontFamily: 'ui-monospace, SFMono-Regular, SF Mono, Menlo, Monaco, Consolas, monospace',
+                  fontSize: '0.85em',
+                  whiteSpace: 'break-spaces',
+                }}
+                {...props}
+              >
                 {children}
               </code>
             );

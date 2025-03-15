@@ -51,7 +51,11 @@ const components = {
     // If it's inside a pre, it's a code block, otherwise it's inline code
     if (props.className) {
       const language = props.className.replace('language-', '');
-      return <CodeBlock language={language}>{props.children}</CodeBlock>;
+      // For code blocks, preserve exact content without processing
+      const codeContent = typeof props.children === 'string' 
+        ? props.children 
+        : (Array.isArray(props.children) ? props.children.join('') : String(props.children));
+      return <CodeBlock language={language}>{codeContent}</CodeBlock>;
     }
     return (
       <Typography component="code" 
@@ -66,7 +70,10 @@ const components = {
       />
     );
   },
-  pre: (props: any) => <div {...props} />, // CodeBlock will handle styling
+  pre: (props: any) => {
+    // Ensure pre tag content is preserved as written
+    return <div {...props} />;
+  }, // CodeBlock will handle styling
   // Add more component mappings as needed
 };
 
