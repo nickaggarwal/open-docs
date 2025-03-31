@@ -16,7 +16,7 @@ Open Docs is a documentation framework that allows you to create beautiful, resp
 - **Search**: Full-text search functionality to help users find content quickly.
 - **Customizable**: Easily customize the look and feel to match your brand.
 
-## Getting Started
+##  Quick Start
 
 To get started with Open Docs, follow these steps:
 
@@ -41,6 +41,12 @@ npm start
 
 4. Open your browser and navigate to `http://localhost:3000`.
 
+5. Deploy the build with 
+
+```bash
+npm run build
+```
+
 ## Project Structure
 
 The project structure is organized as follows:
@@ -62,30 +68,6 @@ open-docs/
 └── tsconfig.json
 ```
 
-
-## Writing Documentation
-
-Documentation is written in MDX, which allows you to use Markdown syntax along with JSX components. Here's an example:
-
-```mdx
-# My Document
-
-This is a paragraph with **bold** and *italic* text.
-
-<Alert severity="info">
-  This is an information alert using a Material UI component.
-</Alert>
-
-## Code Example
-
-```jsx
-function MyComponent() {
-  return <div>Hello, world!</div>;
-}
-```
-
-You can create new MDX files in the `src/content/` directory and they will automatically be available as documentation pages.
-
 ## Site Configuration
 
 
@@ -104,15 +86,22 @@ The `site.config.json` file contains the following key configuration options:
 You can customize all of these options to match your documentation needs. The configuration is automatically applied throughout the site, affecting the theme, navigation, and content organization.
 
 
-## Deployment
+## Writing Documentation
 
-To build the project for production, run:
+Documentation is written in MDX, which allows you to use Markdown syntax along with JSX components. Here's an example:
 
-```bash
-npm run build
+```mdx
+# My Document
+
+This is a paragraph with **bold** and *italic* text.
+
+<Alert severity="info">
+  This is an information alert using Bootstrap component.
+</Alert>
 ```
 
-This will create a `build` directory with the optimized production build. You can then deploy this directory to any static hosting service like Netlify, Vercel, GitHub Pages, or AWS S3.
+You can create new MDX files in the `src/content/` directory and add the path in site.config.json `navigation` array.
+
 
 ## Contributing
 

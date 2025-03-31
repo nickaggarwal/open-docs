@@ -15,19 +15,17 @@ Before you begin, make sure you have the following installed:
 - **npm** or **yarn**
 - **Git** (optional, but recommended)
 
-## Installation Methods
+## Setting up Docs
 
-There are two ways to install Open Docs:
+### 1. Using the starter template 
 
-### 1. Using the starter template (recommended)
-
-The easiest way to get started with Open Docs is to use our starter template:
+The easiest way to get started with Open Docs is to use our starter repo :
 
 <TabGroup>
 <Tab title="npm">
 ```bash
 # Clone the repository
-git clone https://github.com/yourusername/open-docs.git my-docs
+git clone https://github.com/nickaggarwal/open-docs.git my-docs
 
 # Navigate to the project directory
 cd my-docs
@@ -39,104 +37,52 @@ npm install
 npm start
 ```
 </Tab>
-<Tab title="yarn">
-```bash
-# Clone the repository
-git clone https://github.com/yourusername/open-docs.git my-docs
-
-# Navigate to the project directory
-cd my-docs
-
-# Install dependencies
-yarn
-
-# Start the development server
-yarn start
-```
-</Tab>
 </TabGroup>
 
 This will create a new Open Docs project in the `my-docs` directory with all the necessary dependencies and configuration files.
-
-<Callout type="warning">
-Make sure you have the necessary permissions to clone repositories and install packages.
-</Callout>
-
-### 2. Manual Installation
-
-If you prefer to set up Open Docs manually or integrate it into an existing project, follow these steps:
-
-1. Create a new React project or use an existing one:
-
-```bash
-npx create-react-app my-docs --template typescript
-cd my-docs
-```
-
-2. Install the required dependencies:
-
-```bash
-npm install @mui/material @emotion/react @emotion/styled @mui/icons-material @mdx-js/react @mdx-js/mdx react-router-dom
-```
-
-3. Configure webpack to support MDX (if you're using Create React App, you'll need to eject or use a tool like CRACO):
-
-```javascript
-// Add to your webpack config
-module.exports = {
-  module: {
-    rules: [
-      {
-        test: /\.mdx?$/,
-        use: [
-          'babel-loader',
-          '@mdx-js/loader'
-        ]
-      }
-    ]
-  }
-};
-```
 
 ## Configuration
 
 After installation, you may want to configure Open Docs to match your project's needs:
 
+You can start with config folder which has 'site.config.json' file. This file has all the theme and navigation configuration. You can clear the navigation and add your own navigation.
+
 ### Customizing the Theme
 
-Open the `src/theme/ThemeContext.tsx` file to customize the theme colors, typography, and other design elements:
+Configure your site's basic information and branding in the root level of `site.config.json`:
 
-```tsx
-const lightTheme = createTheme({
-  palette: {
-    mode: 'light',
-    primary: {
-      main: '#2e8555', // Change to your brand color
-    },
-    secondary: {
-      main: '#e6007a', // Change to your secondary color
-    },
-    // Add more customizations here
+```json
+{
+  "name": "Open Docs",
+  "logo": "/logo.svg",
+  "favicon": "/favicon.svg",
+  
+  "api": {
+    "baseUrl": "https://open-docs.org"
   },
-  typography: {
-    fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
-    h1: {
-      fontWeight: 700,
-    },
-    // Add more typography customizations
-  },
-});
+}
 ```
 
-## Have Questions?
+### Color Customization
 
-Join our [Discord community](https://discord.gg/opendocs) for help.
+```json
+{
+  "colors": {
+    "primary": "#2E8555",
+    "light": "#4CAF50",
+    "dark": "#1B5E20"
+  },
+}
+
+
+The content folder has sample contnet which you can modify and use or you can detete the folder and create one from scratch. 
+
 
 ## Adding Content
 
 To add new documentation pages:
 
-1. Create a new MDX file in the `src/content/` directory:
+1. Create a new MDX file in the `src/content/new-page.mdx` directory:
 
 ```mdx
 # My New Page
@@ -152,7 +98,21 @@ Content for section 1.
 Content for section 2.
 ```
 
-2. Add the page to the navigation configuration in `src/navigation/config.ts`.
+2. Add the page to the navigation configuration in `site.config.json`.
+
+```json
+{
+  "navigation": [
+    {
+      "group": "Getting Started",
+      "pages": [
+        ...
+        "getting-started/new-page"
+      ]
+    }
+  ]
+}
+```
 
 ## Running in Development Mode
 
@@ -176,51 +136,40 @@ This will create a `build` directory with the optimized production build.
 
 ## Deployment
 
-You can deploy the `build` directory to any static hosting service:
+1. You can deploy the `build` directory to any static hosting service:
+2. You can deploy directly to s3 with npm run deploy command and use it as static website 
 
-### Netlify
+### AWS S3
 
-1. Push your project to a Git repository (GitHub, GitLab, or Bitbucket).
-2. Log in to Netlify and click "New site from Git".
-3. Select your repository and configure the build settings:
-   - Build command: `npm run build`
-   - Publish directory: `build`
+### Prerequisites
 
-### Vercel
+1. AWS Account with S3 access
+2. AWS CLI installed and configured
+3. S3 bucket created and configured for static website hosting
 
-1. Push your project to a Git repository.
-2. Log in to Vercel and click "Import Project".
-3. Select your repository and configure the build settings:
-   - Build command: `npm run build`
-   - Output directory: `build`
+### Deployment 
 
-### GitHub Pages
+1. Create a `.env` file in your project root:
 
-1. Install the `gh-pages` package:
-
-```bash
-npm install --save-dev gh-pages
+```env
+AWS_ACCESS_KEY_ID=your_access_key_id
+AWS_SECRET_ACCESS_KEY=your_secret_access_key
+AWS_REGION=your_region
+AWS_BUCKET_NAME=your_bucket_name
 ```
 
-2. Add the following to your `package.json`:
-
-```json
-{
-  "scripts": {
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d build"
-  },
-  "homepage": "https://yourusername.github.io/open-docs"
-}
-```
-
-3. Deploy to GitHub Pages:
+2. Run the below command to push the files to s3:
 
 ```bash
+# Deploy to S3
 npm run deploy
 ```
 
+
 ## Troubleshooting
+
+For more information on deploying to AWS S3, please refer to the [AWS S3 Deployment Guide](/docs/deployment/aws-deployment).
+
 
 ### Common Issues
 
@@ -268,8 +217,6 @@ If your MDX content is not loading, check your webpack configuration and make su
 After installation, you might want to:
 
 - [Customize the theme](/docs/customization)
-- [Add your own components](/docs/components)
-- [Configure the navigation](/docs/navigation)
-- [Deploy your site](/docs/deployment)
+- [Configure the navigation](/docs/navigation-sidebar)
 
-If you encounter any issues or have questions, please [open an issue](https://github.com/yourusername/open-docs/issues) on GitHub. 
+If you encounter any issues or have questions, please [open an issue](https://github.com/nickaggarwal/open-docs/issues) on GitHub. 
