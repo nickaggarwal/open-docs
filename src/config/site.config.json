@@ -4,11 +4,7 @@
   "favicon": "/favicon.svg",
   
   "api": {
-    "baseUrl": "https://open-docs.org",
-    "auth": {
-      "method": "key",
-      "name": "Authorization"
-    }
+    "baseUrl": "https://open-docs.org"
   },
   
   "colors": {
